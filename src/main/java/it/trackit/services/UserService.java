@@ -3,6 +3,7 @@ package it.trackit.services;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dto.RegisterUserRequest;
 import it.trackit.dto.UpdateUserRequest;
+import it.trackit.dto.UserDto;
 import it.trackit.entities.User;
 import it.trackit.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -15,15 +16,30 @@ import java.util.List;
 public class UserService {
   private final UserRepository userRepository;
 
-  public List<User> getAllUsers() {
-    return userRepository.findAll();
+  public List<UserDto> getAllUsers() {
+    var users = userRepository.findAll();
+    return users.stream().map(user ->
+      UserDto.builder()
+              .nome(user.getNome())
+              .cognome(user.getCognome())
+              .email(user.getEmail())
+              .username(user.getUsername())
+              .build()
+    ).toList();
   }
 
-  public User getUser(Long id) {
-    return userRepository.findById(id).orElse(null);
+  public UserDto getUser(Long id) {
+    var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    return UserDto.builder()
+            .id(user.getId())
+            .nome(user.getNome())
+            .cognome(user.getCognome())
+            .email(user.getEmail())
+            .username(user.getUsername())
+            .build();
   }
 
-  public User registerUser(RegisterUserRequest request) {
+  public UserDto registerUser(RegisterUserRequest request) {
     var newUser = User.builder()
             .username(request.getUsername())
             .email(request.getEmail())
@@ -34,10 +50,16 @@ public class UserService {
 
     userRepository.save(newUser);
 
-    return newUser;
+    return UserDto.builder()
+            .id(newUser.getId())
+            .nome(newUser.getNome())
+            .cognome(newUser.getCognome())
+            .username(newUser.getUsername())
+            .email(newUser.getEmail())
+            .build();
   }
 
-  public User updateUser(Long userId, UpdateUserRequest request) {
+  public UserDto updateUser(Long userId, UpdateUserRequest request) {
     var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
     if (request.getUsername() != null)
@@ -51,7 +73,13 @@ public class UserService {
 
     userRepository.save(user);
 
-    return user;
+    return UserDto.builder()
+            .id(user.getId())
+            .nome(user.getNome())
+            .cognome(user.getCognome())
+            .email(user.getEmail())
+            .username(user.getUsername())
+            .build();
   }
 
   public void deleteUser(Long userId) {
