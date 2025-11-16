@@ -1,6 +1,7 @@
 package it.trackit.controllers;
 
 import it.trackit.dto.RegisterUserRequest;
+import it.trackit.dto.UpdateUserRequest;
 import it.trackit.services.UserService;
 import it.trackit.entities.User;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public User getUser(@RequestParam("id") Long userId) {
+  public User getUser(@PathVariable("id") Long userId) {
     return userService.getUser(userId);
   }
 
@@ -36,5 +37,18 @@ public class UserController {
     var user = userService.registerUser(request);
     var uri = uriBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
     return ResponseEntity.created(uri).body(user);
+  }
+
+  @PutMapping("/{id}")
+  public User updateUser(
+          @PathVariable("id") Long userId,
+          @RequestBody UpdateUserRequest request
+  ) {
+    return userService.updateUser(userId, request);
+  }
+
+  @DeleteMapping("/{id}")
+  public void deleteUser(@PathVariable("id") Long id) {
+    userService.deleteUser(id);
   }
 }
