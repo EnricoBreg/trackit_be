@@ -5,7 +5,6 @@ import it.trackit.services.UserService;
 import it.trackit.entities.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
