@@ -40,22 +40,22 @@ create table project_roles
 );
 
 
-create table project_member
+create table project_members
 (
     project_id      uuid   not null,
     user_id         serial not null,
-    project_role_id integer,
-    constraint project_member_pk
-        primary key (user_id, project_role_id, project_id),
-    constraint project_member_project_roles_id_fk
-        foreign key (project_role_id) references project_roles,
-    constraint project_member_projects_uuid_fk
-        foreign key (project_id) references projects,
-    constraint project_member_users_id_fk
-        foreign key (user_id) references users (id)
+    project_role_id integer not null,
+    constraint project_members_pk
+        primary key (user_id, project_id),
+    constraint project_members_projects_uuid_fk
+      foreign key (project_id) references projects,
+    constraint project_members_users_id_fk
+        foreign key (user_id) references users (id),
+    constraint project_members_project_roles_id_fk
+        foreign key (project_role_id) references project_roles
 );
 
-comment on table project_member is 'Tabella di join per appertenenza ad un progetto e con che ruolo';
+comment on table project_members is 'Tabella di join per appertenenza ad un progetto e con che ruolo';
 
 
 create table tasks
