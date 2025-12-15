@@ -17,3 +17,14 @@ ALTER ROLE trackit SET search_path TO dev, public;
 -- (Opzionale ma consigliato) Revoca i permessi di creazione nello schema public
 -- per forzare l'uso dello schema dev e mantenere pulito il db.
 REVOKE CREATE ON SCHEMA public FROM public;
+
+
+-- Disattivazione di tutti gli utenti e connessioni aperte
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+FROM pg_stat_activity
+WHERE pg_stat_activity.datname = 'track_it'
+  AND pid <> pg_backend_pid();
+
+-- Comandi per droppare il database e lo user
+DROP DATABASE IF EXISTS track_it;
+DROP USER IF EXISTS trackit;
