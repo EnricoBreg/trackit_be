@@ -8,6 +8,7 @@ import it.trackit.entities.User;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
 
   public List<UserDto> getAllUsers() {
     var users = userRepository.findAll();
@@ -28,10 +30,16 @@ public class UserService {
     return userMapper.toDto(user);
   }
 
+  /**
+   * Metodo per registrare un utente da un request @{link {@link RegisterUserRequest}}
+   * @param request di tipo RegisterUserRequest
+   * @return dto rappresentante l'utente registrato
+   */
   public UserDto registerUser(RegisterUserRequest request) {
     var newUser = userMapper.toEntity(request);
     newUser.setIsActive(true);
     newUser.setIsSuperAdmin(false);
+    newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 
     userRepository.save(newUser);
 
@@ -60,5 +68,8 @@ public class UserService {
   public void deleteUser(Long userId) {
     var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     userRepository.delete(user);
+  }
+
+  public void save(User user) {
   }
 }

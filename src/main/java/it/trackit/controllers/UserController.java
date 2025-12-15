@@ -4,10 +4,10 @@ import it.trackit.dto.RegisterUserRequest;
 import it.trackit.dto.UpdateUserRequest;
 import it.trackit.dto.UserDto;
 import it.trackit.services.UserService;
-import it.trackit.entities.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,6 +19,7 @@ import java.util.List;
 public class UserController {
 
   private final UserService userService;
+  private final PasswordEncoder passwordEncoder;
 
   @GetMapping
   public List<UserDto> getAllUsers() {
