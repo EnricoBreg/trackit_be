@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserService {
+
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
@@ -48,16 +49,6 @@ public class UserService {
 
   public UserDto updateUser(Long userId, UpdateUserRequest request) {
     var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
-//    if (request.getUsername() != null)
-//      user.setUsername(request.getUsername());
-//    if (request.getEmail() != null)
-//      user.setEmail(request.getEmail());
-//    if (request.getNome() != null)
-//      user.setNome(request.getNome());
-//    if (request.getCognome() != null)
-//      user.setCognome(request.getCognome());
-
     userMapper.update(request, user);
 
     userRepository.save(user);

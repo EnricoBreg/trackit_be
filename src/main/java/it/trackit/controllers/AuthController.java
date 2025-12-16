@@ -1,40 +1,38 @@
 package it.trackit.controllers;
 
 import it.trackit.dto.LoginRequest;
-import it.trackit.repositories.UserRepository;
-import it.trackit.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
-  private final UserService userService;
-  private final PasswordEncoder passwordEncoder;
-  private final UserRepository userRepository;
+  private final AuthenticationManager authenticationManager;
 
   @PostMapping("/login")
   public ResponseEntity<?> login(
     @Valid @RequestBody LoginRequest request
   ) {
-    var user = userRepository.findByUsername(request.getUsername()).orElse(null);
-    if (user == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
+    authenticationManager.authenticate(
+      new UsernamePasswordAuthenticationToken(
+        request.getUsername(),
+        request.getPassword()
+      )
+    );
 
     return ResponseEntity.ok().build();
+  }
+
+  @ExceptionHandler({BadCredentialsException.class})
+  public ResponseEntity<Void> handleBadCredentialsException() {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 }
