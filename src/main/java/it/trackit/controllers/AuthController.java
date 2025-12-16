@@ -1,9 +1,17 @@
 package it.trackit.controllers;
 
-import it.trackit.dto.UserLoginRequest;
+import it.trackit.dto.LoginRequest;
+import it.trackit.repositories.UserRepository;
 import it.trackit.services.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
@@ -11,22 +19,22 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
   private final UserService userService;
-  //private final AuthController authController;
+  private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
 
   @PostMapping("/login")
-  public String login(
-    @RequestBody UserLoginRequest request
+  public ResponseEntity<?> login(
+    @Valid @RequestBody LoginRequest request
   ) {
-    System.out.println("Request received for login");
-    System.out.println("Username: " + request.getUsername());
-    System.out.println("Password: " + request.getPassword());
-    return "Login successful!";
-  }
+    var user = userRepository.findByUsername(request.getUsername()).orElse(null);
+    if (user == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 
-  @GetMapping("/hello")
-  public String hello(
-    @RequestBody UserLoginRequest request
-  ) {
-    return "Hello World!";
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    return ResponseEntity.ok().build();
   }
 }
