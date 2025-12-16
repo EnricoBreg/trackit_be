@@ -1,10 +1,13 @@
 package it.trackit.mappers;
 
-import it.trackit.dto.RegisterUserRequest;
-import it.trackit.dto.UpdateUserRequest;
-import it.trackit.dto.UserDto;
+import it.trackit.dtos.RegisterUserRequest;
+import it.trackit.dtos.UpdateUserRequest;
+import it.trackit.dtos.UserDto;
 import it.trackit.entities.User;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

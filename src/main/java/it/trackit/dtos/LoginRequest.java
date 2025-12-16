@@ -1,4 +1,4 @@
-package it.trackit.dto;
+package it.trackit.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

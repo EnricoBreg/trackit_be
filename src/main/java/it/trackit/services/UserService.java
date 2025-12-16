@@ -1,9 +1,9 @@
 package it.trackit.services;
 
 import it.trackit.commons.exceptions.UserNotFoundException;
-import it.trackit.dto.RegisterUserRequest;
-import it.trackit.dto.UpdateUserRequest;
-import it.trackit.dto.UserDto;
+import it.trackit.dtos.RegisterUserRequest;
+import it.trackit.dtos.UpdateUserRequest;
+import it.trackit.dtos.UserDto;
 import it.trackit.entities.User;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
