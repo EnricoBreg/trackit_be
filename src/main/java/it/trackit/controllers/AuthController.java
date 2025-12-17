@@ -1,5 +1,6 @@
 package it.trackit.controllers;
 
+import it.trackit.config.JwtConfig;
 import it.trackit.dtos.JwtResponse;
 import it.trackit.dtos.LoginRequest;
 import it.trackit.dtos.UserDto;
@@ -25,6 +26,7 @@ public class AuthController {
 
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
+  private final JwtConfig jwtConfig;
   private final UserRepository userRepository;
   private final UserMapper userMapper;
 
@@ -47,7 +49,7 @@ public class AuthController {
     var cookie = new Cookie("refresh-token", refreshToken);
     cookie.setHttpOnly(true);
     cookie.setPath("/api/auth/refresh");
-    cookie.setMaxAge(604800); // 7 days
+    cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration()); // 7 days
     cookie.setSecure(true);
     response.addCookie(cookie);
 
