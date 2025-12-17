@@ -36,4 +36,8 @@ public class User {
 
   @Column(name = "is_active")
   private Boolean isActive;
+
+  public Object getDisplayName() {
+    return nome + " " + cognome;
+  }
 }
