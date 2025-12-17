@@ -56,11 +56,19 @@ public class AuthController {
     return ResponseEntity.ok(new JwtResponse(accessToken));
   }
 
-  @PostMapping("/validate")
-  public Boolean validate(@RequestHeader("Authorization") String authHeader) {
-    var token = authHeader.replace("Bearer ", "");
+  @PostMapping("/refresh")
+  public ResponseEntity<JwtResponse> refresh(
+    @CookieValue("refresh-token") String refreshToken
+  ) {
+    if (!jwtService.validateToken(refreshToken)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 
-    return jwtService.validateToken(token);
+    var userId = jwtService.getUserIdFromToken(refreshToken);
+    var user = userRepository.findById(userId).orElseThrow();
+    var accessToken = jwtService.generateAccessToken(user);
+
+    return ResponseEntity.ok(new JwtResponse(accessToken));
   }
 
   @GetMapping("/me")
