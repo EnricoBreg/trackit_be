@@ -27,6 +27,9 @@ spring:
         default_schema: dev
     show-sql: true
 
+  jwt:
+    secret: ${JWT_SECRET}
+
 app:
   cors:
     allowed-origins: http://localhost:3000, http://localhost:5173
