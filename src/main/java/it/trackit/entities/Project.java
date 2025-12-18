@@ -39,8 +39,8 @@ public class Project {
   private LocalDateTime dataCreazione;
 
   @Column(name = "updated_at")
-  private LocalDateTime dataUltimoModifica;
+  private LocalDateTime dataUltimaModifica;
 
   @Column(name = "ended_at")
-  private LocalDateTime dataTerminazione;
+  private LocalDateTime dataChiusura;
 }
