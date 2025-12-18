@@ -3,11 +3,13 @@ package it.trackit.repositories;
 import it.trackit.entities.ProjectMember;
 import it.trackit.entities.ProjectMemberKey;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, ProjectMemberKey> {
 
   // Trova tutti i progetti di un utente
