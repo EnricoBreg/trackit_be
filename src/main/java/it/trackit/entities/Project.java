@@ -23,6 +23,7 @@ public class Project {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "uuid")
   private UUID id;
 
   @Column(name = "nome_progetto")
