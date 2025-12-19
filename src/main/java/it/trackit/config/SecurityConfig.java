@@ -52,6 +52,7 @@ public class SecurityConfig {
           .requestMatchers(HttpMethod.POST,"/api/users").permitAll()
           .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
           .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+          .requestMatchers(HttpMethod.GET, "/api/swagger/**").permitAll()
           .requestMatchers("/api/projects","/api/projects/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
           .anyRequest().authenticated()
         )

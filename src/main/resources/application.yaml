@@ -35,3 +35,8 @@ spring:
 app:
   cors:
     allowed-origins: http://localhost:3000, http://localhost:5173
+
+# Documentazione API Restfull
+springdoc:
+  swagger-ui:
+    path: /api/swagger/doc.html
