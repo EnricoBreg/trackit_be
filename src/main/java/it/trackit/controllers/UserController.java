@@ -1,17 +1,20 @@
 package it.trackit.controllers;
 
+import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.RegisterUserRequest;
 import it.trackit.dtos.UpdateUserRequest;
 import it.trackit.dtos.UserDto;
 import it.trackit.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -52,5 +55,10 @@ public class UserController {
   @DeleteMapping("/{id}")
   public void deleteUser(@PathVariable("id") Long id) {
     userService.deleteUser(id);
+  }
+
+  @ExceptionHandler({UserNotFoundException.class})
+  public ResponseEntity<Map<String, String>> handleUserNotFound() {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found."));
   }
 }
