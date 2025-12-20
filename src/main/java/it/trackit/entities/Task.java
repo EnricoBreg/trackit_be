@@ -12,6 +12,7 @@ import lombok.Setter;
 public class Task {
   public enum Stato {
     PENDING,
+    ASSIGNED,
     IN_PROGRESS,
     DONE,
     CANCELLED
@@ -34,7 +35,9 @@ public class Task {
   @Column(name = "priorita")
   private Integer priorita = 1;
 
-  //private Project project;
+  @ManyToOne
+  @JoinColumn(name = "project_id")
+  private Project project;
 
   @ManyToOne
   @JoinColumn(name = "assignee_id")

@@ -1,14 +1,15 @@
 package it.trackit.dtos;
 
+import it.trackit.dtos.tasks.TaskDto;
 import it.trackit.entities.Project.Stato;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
-@Builder
 public class ProjectDto {
   private UUID id;
   private String nome;
@@ -17,4 +18,6 @@ public class ProjectDto {
   private LocalDateTime dataCreazione;
   private LocalDateTime dataUltimaModifica;
   private LocalDateTime dataChiusura;
+  private Integer tasksCount;
+  private List<TaskDto> tasks = new ArrayList<>();
 }

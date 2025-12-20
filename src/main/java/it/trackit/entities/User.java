@@ -37,7 +37,15 @@ public class User {
   @Column(name = "is_active")
   private Boolean isActive;
 
-  public Object getDisplayName() {
-    return nome + " " + cognome;
+  public String getDisplayName() {
+    String displayName = "";
+    if (nome != null) {
+      displayName = nome;
+    }
+    if (cognome != null) {
+      displayName += " " + cognome;
+    }
+    displayName += " (" + getUsername() + ")";
+    return displayName;
   }
 }

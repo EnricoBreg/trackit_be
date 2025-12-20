@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -44,4 +46,12 @@ public class Project {
 
   @Column(name = "ended_at")
   private LocalDateTime dataChiusura;
+
+  @OneToMany(mappedBy = "project", cascade = CascadeType.MERGE,
+             orphanRemoval = true, fetch = FetchType.LAZY)
+  private List<Task> tasks = new ArrayList<>();
+
+  public int getTasksCount() {
+    return tasks.size();
+  }
 }
