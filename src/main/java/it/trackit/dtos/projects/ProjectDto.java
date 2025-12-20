@@ -1,6 +1,5 @@
-package it.trackit.dtos;
+package it.trackit.dtos.projects;
 
-import it.trackit.dtos.tasks.TaskDto;
 import it.trackit.entities.Project.Stato;
 import lombok.Data;
 

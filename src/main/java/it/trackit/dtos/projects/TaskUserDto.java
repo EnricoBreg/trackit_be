@@ -1,4 +1,4 @@
-package it.trackit.dtos.tasks;
+package it.trackit.dtos.projects;
 
 import lombok.Data;
 

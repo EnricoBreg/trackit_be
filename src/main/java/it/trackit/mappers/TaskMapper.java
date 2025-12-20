@@ -1,7 +1,7 @@
 package it.trackit.mappers;
 
-import it.trackit.dtos.tasks.TaskDto;
-import it.trackit.dtos.tasks.TaskUserDto;
+import it.trackit.dtos.projects.TaskDto;
+import it.trackit.dtos.projects.TaskUserDto;
 import it.trackit.entities.Task;
 import it.trackit.entities.User;
 import org.mapstruct.Mapper;

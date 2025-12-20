@@ -1,7 +1,7 @@
 package it.trackit.controllers;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
-import it.trackit.dtos.ProjectDto;
+import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.repositories.ProjectRepository;
 import it.trackit.repositories.TaskRepository;
 import it.trackit.services.ProjectService;

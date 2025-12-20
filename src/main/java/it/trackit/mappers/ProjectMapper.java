@@ -1,6 +1,6 @@
 package it.trackit.mappers;
 
-import it.trackit.dtos.ProjectDto;
+import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.entities.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
