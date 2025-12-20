@@ -36,7 +36,7 @@ public class Project {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "stato")
-  private Stato stato;
+  private Stato stato = Stato.PENDING;
 
   @Column(name = "created_at")
   private LocalDateTime dataCreazione;

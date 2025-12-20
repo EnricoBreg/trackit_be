@@ -1,6 +1,7 @@
 package it.trackit.services;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
+import it.trackit.dtos.projects.NewProjectRequest;
 import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.entities.Task;
 import it.trackit.mappers.ProjectMapper;
@@ -9,6 +10,7 @@ import it.trackit.repositories.TaskRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,4 +41,12 @@ public class ProjectService {
     return taskRepository.findByProjectId(projectId);
   }
 
+  public ProjectDto createProjectFromRequest(NewProjectRequest request) {
+    var newProject = projectMapper.toEntity(request);
+    newProject.setDataCreazione(LocalDateTime.now());
+    // newProject.setCreatore(utenteLoggato) // TODO: da implementare il creatore del progetto
+    projectRepository.save(newProject);
+
+    return projectMapper.toDto(newProject);
+  }
 }

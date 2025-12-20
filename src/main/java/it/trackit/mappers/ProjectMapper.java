@@ -1,5 +1,6 @@
 package it.trackit.mappers;
 
+import it.trackit.dtos.projects.NewProjectRequest;
 import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.entities.Project;
 import org.mapstruct.Mapper;
@@ -10,4 +11,6 @@ public interface ProjectMapper {
   @Mapping(target = "tasks", source = "tasks")
   @Mapping(target = "tasksCount", expression = "java(project.getTasksCount())")
   ProjectDto toDto(Project project);
+
+  Project toEntity(NewProjectRequest dto);
 }

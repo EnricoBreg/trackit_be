@@ -1,6 +1,7 @@
 package it.trackit.controllers;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
+import it.trackit.dtos.projects.NewProjectRequest;
 import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.repositories.ProjectRepository;
 import it.trackit.repositories.TaskRepository;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,18 @@ public class ProjectController {
   @GetMapping
   public List<ProjectDto> getProjects() {
     return projectService.getAllProjects();
+  }
+
+  @PostMapping
+  public ResponseEntity<ProjectDto> createProject(
+    @RequestBody NewProjectRequest request,
+    UriComponentsBuilder uriBuilder
+  ) {
+    var projectDto = projectService.createProjectFromRequest(request);
+
+    var uri = uriBuilder.path("/api/projects/{id}").buildAndExpand(projectDto.getId()).toUri();
+
+    return ResponseEntity.created(uri).body(projectDto);
   }
 
   /**
