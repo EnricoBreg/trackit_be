@@ -1,7 +1,7 @@
 package it.trackit.services;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
-import it.trackit.dtos.projects.NewProjectRequest;
+import it.trackit.dtos.projects.CreateProjectRequest;
 import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.entities.Task;
 import it.trackit.mappers.ProjectMapper;
@@ -41,7 +41,7 @@ public class ProjectService {
     return taskRepository.findByProjectId(projectId);
   }
 
-  public ProjectDto createProjectFromRequest(NewProjectRequest request) {
+  public ProjectDto createProjectFromRequest(CreateProjectRequest request) {
     var newProject = projectMapper.toEntity(request);
     newProject.setDataCreazione(LocalDateTime.now());
     // newProject.setCreatore(utenteLoggato) // TODO: da implementare il creatore del progetto

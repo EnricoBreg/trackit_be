@@ -1,7 +1,7 @@
 package it.trackit.controllers;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
-import it.trackit.dtos.projects.NewProjectRequest;
+import it.trackit.dtos.projects.CreateProjectRequest;
 import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.repositories.ProjectRepository;
 import it.trackit.repositories.TaskRepository;
@@ -36,12 +36,14 @@ public class ProjectController {
 
   @PostMapping
   public ResponseEntity<ProjectDto> createProject(
-    @RequestBody NewProjectRequest request,
+    @RequestBody CreateProjectRequest request,
     UriComponentsBuilder uriBuilder
   ) {
     var projectDto = projectService.createProjectFromRequest(request);
 
     var uri = uriBuilder.path("/api/projects/{id}").buildAndExpand(projectDto.getId()).toUri();
+
+
 
     return ResponseEntity.created(uri).body(projectDto);
   }

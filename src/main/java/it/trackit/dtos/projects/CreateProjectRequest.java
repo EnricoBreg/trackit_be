@@ -4,7 +4,7 @@ import it.trackit.entities.Project;
 import lombok.Data;
 
 @Data
-public class NewProjectRequest {
+public class CreateProjectRequest {
   private String nome;
   private String descrizione;
   private Project.Stato stato;
