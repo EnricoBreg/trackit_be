@@ -54,4 +54,16 @@ public class Project {
   public int getTasksCount() {
     return tasks.size();
   }
+
+  public void addTask(Task task) {
+    if (tasks.contains(task)) return;
+    task.setProject(this);
+    tasks.add(task);
+  }
+
+  public void removeTask(Task task) {
+    if (!tasks.contains(task)) return;
+    tasks.remove(task);
+    task.setProject(null);
+  }
 }

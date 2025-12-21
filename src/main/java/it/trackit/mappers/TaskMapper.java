@@ -1,5 +1,6 @@
 package it.trackit.mappers;
 
+import it.trackit.dtos.projects.CreateProjectTaskRequest;
 import it.trackit.dtos.projects.TaskDto;
 import it.trackit.dtos.projects.TaskUserDto;
 import it.trackit.entities.Task;
@@ -9,8 +10,13 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
+  @Mapping(target = "id", source = "id")
+  @Mapping(target = "projectId", source = "project.id")
   TaskDto toDto(Task task);
 
   @Mapping(target = "nominativo", expression = "java(user.getDisplayName())")
   TaskUserDto toDto(User user);
+
+  @Mapping(ignore = true, target = "assegnatario")
+  Task toEntity(CreateProjectTaskRequest dto);
 }
