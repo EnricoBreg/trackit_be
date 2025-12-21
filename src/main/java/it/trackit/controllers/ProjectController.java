@@ -8,6 +8,7 @@ import it.trackit.dtos.projects.TaskDto;
 import it.trackit.repositories.ProjectRepository;
 import it.trackit.repositories.TaskRepository;
 import it.trackit.services.ProjectService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +67,7 @@ public class ProjectController {
   @PostMapping("/{projectId}/tasks")
   public TaskDto createProjectTask(
     @PathVariable("projectId") UUID projectId,
-    @RequestBody CreateProjectTaskRequest request
+    @Valid @RequestBody CreateProjectTaskRequest request
   ) {
     return projectService.createProjectTask(projectId, request);
   }
