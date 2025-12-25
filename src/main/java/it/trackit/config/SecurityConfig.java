@@ -54,6 +54,7 @@ public class SecurityConfig {
           .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
           .requestMatchers(HttpMethod.GET, "/api/swagger/**").permitAll()
           .requestMatchers("/api/projects","/api/projects/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
+          .requestMatchers("/api/tasks","/api/tasks/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
           .anyRequest().authenticated()
         )
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

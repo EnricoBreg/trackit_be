@@ -1,6 +1,8 @@
 package it.trackit.controllers;
 
 import it.trackit.dtos.projects.TaskDto;
+import it.trackit.dtos.projects.UpdateTaskInfoRequest;
+import it.trackit.services.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,14 +11,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
+  private final TaskService taskService;
+
   @GetMapping("/{taskId}")
   public TaskDto getTask(@PathVariable("taskId") Long taskId) {
-    throw new UnsupportedOperationException();
+    return taskService.findTask(taskId);
   }
 
   @PutMapping("/{taskId}")
-  public TaskDto updateTask(@PathVariable("taskId") Long taskId, @RequestBody TaskDto taskDto) {
-    throw new UnsupportedOperationException();
+  public TaskDto updateTask(
+    @PathVariable("taskId") Long taskId,
+    @RequestBody UpdateTaskInfoRequest request
+  ) {
+    return taskService.updateTaskInfo(taskId, request);
   }
 
   @DeleteMapping("/{taskId}")

@@ -3,10 +3,10 @@ package it.trackit.mappers;
 import it.trackit.dtos.projects.CreateProjectTaskRequest;
 import it.trackit.dtos.projects.TaskDto;
 import it.trackit.dtos.projects.TaskUserDto;
+import it.trackit.dtos.projects.UpdateTaskInfoRequest;
 import it.trackit.entities.Task;
 import it.trackit.entities.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
@@ -19,4 +19,7 @@ public interface TaskMapper {
 
   @Mapping(ignore = true, target = "assegnatario")
   Task toEntity(CreateProjectTaskRequest dto);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  void update(UpdateTaskInfoRequest dto, @MappingTarget Task task);
 }
