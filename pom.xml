@@ -148,9 +148,9 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<configuration>
-					<url>jdbc:postgresql://localhost:5432/track_it?currentSchema=dev</url>
-					<user>enrico</user>
-					<password>enrico</password>
+					<url>jdbc:postgresql://192.168.1.65:5432/track_it?currentSchema=dev</url>
+					<user>trackit</user>
+					<password>trackit</password>
 					<schemas>
 						<schema>dev</schema>
 					</schemas>
