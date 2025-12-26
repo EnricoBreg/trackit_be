@@ -2,7 +2,7 @@ spring:
   application:
     name: Track_It
   profiles:
-    default: dev  # <--- Se non dico nulla, parti in DEV
+    active: dev  # <--- Se non dico nulla, parti in DEV
 
   jwt:
     secret: ${JWT_SECRET}
