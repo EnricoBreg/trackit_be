@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    # 1. Imposta lo schema predefinito a livello di connessione JDBC
+    #    Aggiungi "?currentSchema=spring-tutorial" alla fine del tuo URL.
+    url: # jdbc:postgresql://192.168.1.65:5432/track_it?currentSchema=dev
+    username: # trackit
+    password: # trackit
+
+  flyway:
+    schemas: # nome del db
+    # (Opzionale: aggiungi questo se vuoi che Flyway crei lo schema
+    #  se non esiste già)
+    create-schemas: false
+
+
+  # 3. (Opzionale, ma buona pratica per JPA/Hibernate)
+  #    Dice anche a Hibernate di usare questo schema come predefinito
+  jpa:
+    properties:
+      hibernate:
+        default_schema: # dev
+    show-sql: false
