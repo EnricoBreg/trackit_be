@@ -6,7 +6,9 @@ import it.trackit.dtos.projects.TaskUserDto;
 import it.trackit.dtos.projects.UpdateTaskInfoRequest;
 import it.trackit.entities.Task;
 import it.trackit.entities.User;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
@@ -20,6 +22,5 @@ public interface TaskMapper {
   @Mapping(ignore = true, target = "assegnatario")
   Task toEntity(CreateProjectTaskRequest dto);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   void update(UpdateTaskInfoRequest dto, @MappingTarget Task task);
 }
