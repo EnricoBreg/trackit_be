@@ -1,5 +1,5 @@
-alter table dev.users
+alter table users
     add nome varchar(255);
 
-alter table dev.users
+alter table users
     add cognome varchar(255);

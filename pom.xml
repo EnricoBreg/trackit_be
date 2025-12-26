@@ -154,6 +154,10 @@
 					<schemas>
 						<schema>dev</schema>
 					</schemas>
+          <locations>
+            <location>filesystem:src/main/resources/db/migration</location>
+            <location>filesystem:src/main/resources/db/data</location>
+          </locations>
 					<createSchemas>true</createSchemas>
 					<cleanDisabled>false</cleanDisabled>
 				</configuration>
