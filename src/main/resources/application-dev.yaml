@@ -11,6 +11,7 @@ spring:
     # (Opzionale: aggiungi questo se vuoi che Flyway crei lo schema
     #  se non esiste già)
     create-schemas: true
+    #clean-disabled: false
     locations:
       - classpath:db/migration
       - classpath:db/data
