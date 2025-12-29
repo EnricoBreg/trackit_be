@@ -67,8 +67,8 @@ public class DataSeedingConfig {
     IntStream.range(0, 20).forEach(i -> {
       String nome = faker.name().firstName();
       String cognome = faker.name().lastName();
-      String username = (nome + "." + cognome).toLowerCase().replaceAll("'", "");
-      String email = faker.internet().emailAddress();
+      String username = (nome + "." + cognome).toLowerCase().replaceAll("'", "").replaceAll(" ", "");
+      String email = username + "@trackit.it";
       String password = passwordEncoder.encode("trackit123");
 
       var utente = new User();

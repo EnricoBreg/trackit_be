@@ -16,4 +16,7 @@ public class ProjectRole {
 
   @Column(name = "nome_ruolo")
   private String nome;
+
+  @Column(name = "level")
+  private Integer livello = 1;
 }
