@@ -18,26 +18,32 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+  private final static String AUTH_HEADER = "Authorization";
+  private final static String TOKEN_PREFIX = "Bearer ";
+
   private final JwtService jwtService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    var authHeader = request.getHeader("Authorization");
-    if (authHeader == null || !authHeader.startsWith("Bearer")) {
+    var authHeader = request.getHeader(AUTH_HEADER);
+    if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
       filterChain.doFilter(request, response);
       return;
     }
 
-    var token = authHeader.replace("Bearer ", "");
+    var token = authHeader.replace(TOKEN_PREFIX, "");
     if (!jwtService.validateToken(token)) {
       filterChain.doFilter(request, response);
       return;
     }
 
+    var userId = jwtService.getUserIdFromToken(token);
+    var authorities = jwtService.getAuthoritiesFromToken(token);
+
     var authentication = new UsernamePasswordAuthenticationToken(
-      jwtService.getUserIdFromToken(token),
+      userId,
       null,
-      null
+      authorities
     );
     authentication.setDetails(
       new WebAuthenticationDetailsSource().buildDetails(request)

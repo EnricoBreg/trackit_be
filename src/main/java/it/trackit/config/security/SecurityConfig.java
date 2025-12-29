@@ -1,4 +1,4 @@
-package it.trackit.config;
+package it.trackit.config.security;
 
 import it.trackit.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -29,6 +30,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
 
@@ -49,12 +51,12 @@ public class SecurityConfig {
       .csrf(AbstractHttpConfigurer::disable)
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .authorizeHttpRequests(c -> c
-          .requestMatchers(HttpMethod.POST,"/api/users").permitAll()
           .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
           .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
           .requestMatchers(HttpMethod.GET, "/api/swagger/**").permitAll()
-          .requestMatchers("/api/projects","/api/projects/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
-          .requestMatchers("/api/tasks","/api/tasks/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
+          //.requestMatchers(HttpMethod.POST,"/api/users").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
+          //.requestMatchers("/api/projects","/api/projects/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
+          //.requestMatchers("/api/tasks","/api/tasks/**").permitAll() // temporaneamente permesse per testing, poi sarà da cambiare in base al ruolo
           .anyRequest().authenticated()
         )
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

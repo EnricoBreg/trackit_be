@@ -32,4 +32,6 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Pr
   // per trovare gli utenti che sono membri di un progetto
   @Query("SELECT pm.user FROM ProjectMember pm WHERE pm.project.id = :projectId")
   List<User> findUsersByProjectId(@Param("projectId") UUID id);
+
+  boolean existsByProject_IdAndUser_Id(UUID projectId, Long userId);
 }
