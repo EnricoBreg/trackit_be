@@ -1,0 +1,2 @@
+ALTER TABLE project_roles
+ALTER COLUMN level SET DEFAULT 1;
