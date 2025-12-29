@@ -4,13 +4,11 @@ import it.trackit.dtos.RegisterUserRequest;
 import it.trackit.dtos.UpdateUserRequest;
 import it.trackit.dtos.UserDto;
 import it.trackit.entities.User;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+  @Mapping(target = "nominativo", expression = "java(user.getDisplayName())")
   UserDto toDto(User user);
   User toEntity(RegisterUserRequest request);
 
