@@ -1,6 +1,8 @@
 spring:
   application:
     name: Track_It
+    version: 0.5-alpha
+    description: A customizable next-generation project tracker
   profiles:
     active: dev  # <--- Se non dico nulla, parti in DEV
 
