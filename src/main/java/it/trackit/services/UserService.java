@@ -8,6 +8,7 @@ import it.trackit.entities.User;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,8 +62,12 @@ public class UserService {
     userRepository.delete(user);
   }
 
+  public UserDto getCurrentAuthenticatedUser() {
+    String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    return getUser(Long.valueOf(userId));
+  }
+
   public void save(User user) {
     userRepository.save(user);
   }
-
 }

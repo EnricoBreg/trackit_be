@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,16 +26,25 @@ public class UserController {
   private final PasswordEncoder passwordEncoder;
 
   @GetMapping
+  @PreAuthorize("isAuthenticated()")
   public List<UserDto> getAllUsers() {
     return userService.getAllUsers();
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("@userSecurity.isCurrentAuthenticatedUser(#userId)")
   public UserDto getUser(@PathVariable("id") Long userId) {
     return userService.getUser(userId);
   }
 
+  @GetMapping("/me")
+  @PreAuthorize("isAuthenticated()")
+  public UserDto me() {
+    return userService.getCurrentAuthenticatedUser();
+  }
+
   @PostMapping
+  @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
   public ResponseEntity<?> registerUser(
       @Valid @RequestBody RegisterUserRequest request,
       UriComponentsBuilder uriBuilder
@@ -45,6 +55,7 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("@userSecurity.isCurrentAuthenticatedUser(#userId)")
   public UserDto updateUser(
           @PathVariable("id") Long userId,
           @RequestBody UpdateUserRequest request
@@ -53,6 +64,7 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("@hasRole('ROLE_SUPER_ADMIN')")
   public void deleteUser(@PathVariable("id") Long id) {
     userService.deleteUser(id);
   }
