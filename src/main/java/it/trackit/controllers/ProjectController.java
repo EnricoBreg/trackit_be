@@ -78,15 +78,18 @@ public class ProjectController {
   }
 
   @PostMapping("/{projectId}/members")
-  public ResponseEntity<Void> addProjectMember(
+  public ResponseEntity<ProjectMemberDto> addProjectMember(
     @PathVariable("projectId") UUID projectId,
-    @Valid @RequestBody AddProjectMemberRequest request
+    @Valid @RequestBody AddProjectMemberRequest request,
+    UriComponentsBuilder uriBuilder
   ) {
     var userId = request.getUserId();
     var roleName = request.getRole();
 
-    projectService.addUserWithRole(projectId, userId, roleName);
-    return ResponseEntity.noContent().build();
+    var projectMemberDto = projectService.addUserWithRole(projectId, userId, roleName);
+    var uri = uriBuilder.path("/api/projects/{id}").buildAndExpand(projectMemberDto.getProjectId()).toUri();
+
+    return ResponseEntity.created(uri).body(projectMemberDto);
   }
 
   @DeleteMapping("/{projectId}/members/{userId}")

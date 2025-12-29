@@ -20,5 +20,7 @@ public interface ProjectMapper {
   Project toEntity(CreateProjectRequest dto);
 
   @Mapping(target = "role", source = "role.nome")
+  @Mapping(target = "user.nominativo", expression = "java(user.getDisplayName())")
+  @Mapping(target = "projectId", source = "project.id")
   ProjectMemberDto toDto(ProjectMember projectMember);
 }

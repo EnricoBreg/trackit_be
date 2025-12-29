@@ -4,10 +4,7 @@ import it.trackit.commons.exceptions.ProjectNotFoundException;
 import it.trackit.commons.exceptions.RoleNotFoundException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.UserDto;
-import it.trackit.dtos.projects.CreateProjectRequest;
-import it.trackit.dtos.projects.CreateProjectTaskRequest;
-import it.trackit.dtos.projects.ProjectDto;
-import it.trackit.dtos.projects.TaskDto;
+import it.trackit.dtos.projects.*;
 import it.trackit.entities.ProjectMember;
 import it.trackit.entities.ProjectMemberKey;
 import it.trackit.mappers.ProjectMapper;
@@ -87,7 +84,7 @@ public class ProjectService {
     return users.stream().map(userMapper::toDto).toList();
   }
 
-  public void addUserWithRole(UUID projectId, Long userId, String roleName) throws RoleNotFoundException {
+  public ProjectMemberDto addUserWithRole(UUID projectId, Long userId, String roleName) throws RoleNotFoundException {
     var project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
     var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     var role = projectRoleRepository.findByNome(roleName).orElseThrow(RoleNotFoundException::new);
@@ -95,6 +92,8 @@ public class ProjectService {
     var projectMember = new ProjectMember(project, user, role);
 
     projectMemberRepository.save(projectMember);
+
+    return projectMapper.toDto(projectMember);
   }
 
   public void removeMember(UUID projectId, Long userId) {
