@@ -1,16 +1,19 @@
 package it.trackit.services;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
+import it.trackit.commons.exceptions.RoleNotFound;
 import it.trackit.commons.exceptions.UserNotFoundException;
+import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.CreateProjectRequest;
 import it.trackit.dtos.projects.CreateProjectTaskRequest;
 import it.trackit.dtos.projects.ProjectDto;
 import it.trackit.dtos.projects.TaskDto;
+import it.trackit.entities.ProjectMember;
+import it.trackit.entities.ProjectMemberKey;
 import it.trackit.mappers.ProjectMapper;
 import it.trackit.mappers.TaskMapper;
-import it.trackit.repositories.ProjectRepository;
-import it.trackit.repositories.TaskRepository;
-import it.trackit.repositories.UserRepository;
+import it.trackit.mappers.UserMapper;
+import it.trackit.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +27,16 @@ import java.util.UUID;
 public class ProjectService {
 
   private final ProjectRepository projectRepository;
-  private final ProjectMapper projectMapper;
   private final TaskRepository taskRepository;
-  private final TaskMapper taskMapper;
-  private final UserService userService;
   private final UserRepository userRepository;
+  private final ProjectMemberRepository projectMemberRepository;
+  private final ProjectRoleRepository projectRoleRepository;
+
+  private final ProjectMapper projectMapper;
+  private final TaskMapper taskMapper;
+
+  private final UserService userService;
+  private final UserMapper userMapper;
 
 
   public List<ProjectDto> getAllProjects() {
@@ -72,5 +80,38 @@ public class ProjectService {
     taskRepository.save(task);
 
     return taskMapper.toDto(task);
+  }
+
+  public List<UserDto> getProjectMembers(UUID projectId) {
+    var users = projectMemberRepository.findUsersByProjectId(projectId);
+    return users.stream().map(userMapper::toDto).toList();
+  }
+
+  public void addUserWithRole(UUID projectId, Long userId, String roleName) {
+    var project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
+    var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    var role = projectRoleRepository.findByNome(roleName).orElseThrow(RoleNotFound::new);
+
+    var projectMember = new ProjectMember(project, user, role);
+
+    projectMemberRepository.save(projectMember);
+  }
+
+  public void removeMember(UUID projectId, Long userId) {
+    var key = new ProjectMemberKey(projectId, userId);
+    if (!projectMemberRepository.existsById(key)) {
+      throw new UserNotFoundException("L'utente non è membro del progetto");
+    }
+
+    var projectMember = projectMemberRepository.findById(key).orElseThrow(UserNotFoundException::new);
+    var project = projectMember.getProject();
+
+    project.removeMember(projectMember);
+    // NON serve chiamare projectMemberRepository.delete()!
+    // Quando si salva 'project' (o al commit della transazione),
+    // Hibernate vede che un elemento è stato rimosso dalla lista
+    // e lancia la DELETE SQL automaticamente grazie a orphanRemoval=true.
+    // projectMemberRepository.delete(projectMember);
+    projectRepository.save(project);
   }
 }

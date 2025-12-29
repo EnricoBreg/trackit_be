@@ -2,7 +2,10 @@ package it.trackit.repositories;
 
 import it.trackit.entities.ProjectMember;
 import it.trackit.entities.ProjectMemberKey;
+import it.trackit.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +26,10 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Pr
   // Trova un membro specifico (per vedere il ruolo)
   // Spring capisce automaticamente come cercare dentro la chiave composta
   Optional<ProjectMember> findByProject_IdAndUserId(UUID projectId, Long userId);
+
+  // Seleziona l'oggetto 'user' dentro l'entità ProjectMember
+  // dove l'id del progetto corrisponde al parametro. Serve
+  // per trovare gli utenti che sono membri di un progetto
+  @Query("SELECT pm.user FROM ProjectMember pm WHERE pm.project.id = :projectId")
+  List<User> findUsersByProjectId(@Param("projectId") UUID id);
 }

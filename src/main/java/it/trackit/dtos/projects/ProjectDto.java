@@ -19,4 +19,6 @@ public class ProjectDto {
   private LocalDateTime dataChiusura;
   private Integer tasksCount;
   private List<TaskDto> tasks = new ArrayList<>();
+  private Integer membersCount;
+  private List<ProjectMemberDto> members = new ArrayList<>();
 }

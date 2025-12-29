@@ -51,8 +51,16 @@ public class Project {
              orphanRemoval = true, fetch = FetchType.LAZY)
   private List<Task> tasks = new ArrayList<>();
 
+  @OneToMany(mappedBy = "project", cascade = CascadeType.MERGE,
+             orphanRemoval = true, fetch = FetchType.LAZY)
+  private List<ProjectMember> members = new ArrayList<>();
+
   public int getTasksCount() {
     return tasks.size();
+  }
+
+  public int getMembersCount() {
+    return members.size();
   }
 
   public void addTask(Task task) {
@@ -65,5 +73,17 @@ public class Project {
     if (!tasks.contains(task)) return;
     tasks.remove(task);
     task.setProject(null);
+  }
+
+  public void addMember(ProjectMember member) {
+    if (members.contains(member)) return;
+    members.add(member);
+    member.setProject(this);
+  }
+
+  public void removeMember(ProjectMember member) {
+    if (!members.contains(member)) return;
+    members.remove(member);
+    member.setProject(null);
   }
 }

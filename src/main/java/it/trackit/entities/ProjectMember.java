@@ -1,7 +1,6 @@
 package it.trackit.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProjectMember {
 
   @EmbeddedId
@@ -30,4 +28,11 @@ public class ProjectMember {
   @ManyToOne
   @JoinColumn(name = "project_role_id", nullable = false)
   private ProjectRole role;
+
+  public ProjectMember(Project project, User user, ProjectRole role) {
+    this.id = new ProjectMemberKey();
+    this.project = project;
+    this.user = user;
+    this.role = role;
+  }
 }

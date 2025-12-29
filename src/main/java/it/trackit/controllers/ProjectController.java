@@ -1,10 +1,8 @@
 package it.trackit.controllers;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
-import it.trackit.dtos.projects.CreateProjectRequest;
-import it.trackit.dtos.projects.CreateProjectTaskRequest;
-import it.trackit.dtos.projects.ProjectDto;
-import it.trackit.dtos.projects.TaskDto;
+import it.trackit.dtos.UserDto;
+import it.trackit.dtos.projects.*;
 import it.trackit.repositories.ProjectRepository;
 import it.trackit.repositories.TaskRepository;
 import it.trackit.services.ProjectService;
@@ -70,6 +68,32 @@ public class ProjectController {
     @Valid @RequestBody CreateProjectTaskRequest request
   ) {
     return projectService.createProjectTask(projectId, request);
+  }
+
+  @GetMapping("/{projectId}/members")
+  public List<UserDto> getProjectMembers(@PathVariable("projectId") UUID projectId) {
+    return projectService.getProjectMembers(projectId);
+  }
+
+  @PostMapping("/{projectId}/members")
+  public ResponseEntity<Void> addProjectMember(
+    @PathVariable("projectId") UUID projectId,
+    @Valid @RequestBody AddProjectMemberRequest request
+  ) {
+    var userId = request.getUserId();
+    var roleName = request.getRole();
+
+    projectService.addUserWithRole(projectId, userId, roleName);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{projectId}/members/{userId}")
+  public ResponseEntity<Void> removeProjectMember(
+    @PathVariable("projectId") UUID projectId,
+    @PathVariable("userId") Long userId
+  ) {
+    projectService.removeMember(projectId, userId);
+    return ResponseEntity.noContent().build();
   }
 
   @ExceptionHandler({ProjectNotFoundException.class})
