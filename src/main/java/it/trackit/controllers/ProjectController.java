@@ -1,6 +1,8 @@
 package it.trackit.controllers;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
+import it.trackit.commons.exceptions.RoleNotFoundException;
+import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
 import it.trackit.repositories.ProjectRepository;
@@ -96,8 +98,8 @@ public class ProjectController {
     return ResponseEntity.noContent().build();
   }
 
-  @ExceptionHandler({ProjectNotFoundException.class})
-  public ResponseEntity<Map<String, String>> handleProjectNotFound() {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Project not found."));
+  @ExceptionHandler({ProjectNotFoundException.class, RoleNotFoundException.class, UserNotFoundException.class})
+  public ResponseEntity<Map<String, String>> handleProjectNotFound(Exception ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
   }
 }

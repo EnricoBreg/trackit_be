@@ -1,7 +1,7 @@
 package it.trackit.services;
 
 import it.trackit.commons.exceptions.ProjectNotFoundException;
-import it.trackit.commons.exceptions.RoleNotFound;
+import it.trackit.commons.exceptions.RoleNotFoundException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.CreateProjectRequest;
@@ -87,10 +87,10 @@ public class ProjectService {
     return users.stream().map(userMapper::toDto).toList();
   }
 
-  public void addUserWithRole(UUID projectId, Long userId, String roleName) {
+  public void addUserWithRole(UUID projectId, Long userId, String roleName) throws RoleNotFoundException {
     var project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
     var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-    var role = projectRoleRepository.findByNome(roleName).orElseThrow(RoleNotFound::new);
+    var role = projectRoleRepository.findByNome(roleName).orElseThrow(RoleNotFoundException::new);
 
     var projectMember = new ProjectMember(project, user, role);
 
