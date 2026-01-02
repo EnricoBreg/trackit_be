@@ -4,9 +4,9 @@ import it.trackit.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component("userSecurity")
+@Component("userSecurityRules")
 @RequiredArgsConstructor
-public class UserSecurity extends AppSecurity {
+public class UserSecurityRules extends BaseAppSecurityRules {
 
   private final UserRepository userRepository;
 

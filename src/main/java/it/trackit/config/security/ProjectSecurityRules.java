@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-@Component("projectSecurity")
+@Component("projectSecurityRules")
 @RequiredArgsConstructor
-public class ProjectSecurity extends AppSecurity {
+public class ProjectSecurityRules extends BaseAppSecurityRules {
 
   // private final UserRepository userRepository;
   private final ProjectMemberRepository projectMemberRepository;

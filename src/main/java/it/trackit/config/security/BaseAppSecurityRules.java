@@ -2,7 +2,7 @@ package it.trackit.config.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class AppSecurity {
+public class BaseAppSecurityRules {
 
   protected Long getAuthenticatedUserId() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();

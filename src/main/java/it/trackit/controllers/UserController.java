@@ -32,7 +32,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  @PreAuthorize("@userSecurity.isCurrentAuthenticatedUser(#userId)")
+  @PreAuthorize("@userSecurityRules.isCurrentAuthenticatedUser(#userId)")
   public UserDto getUser(@PathVariable("id") Long userId) {
     return userService.getUser(userId);
   }
@@ -55,7 +55,7 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
-  @PreAuthorize("@userSecurity.isCurrentAuthenticatedUser(#userId)")
+  @PreAuthorize("@userSecurityRules.isCurrentAuthenticatedUser(#userId)")
   public UserDto updateUser(
           @PathVariable("id") Long userId,
           @RequestBody UpdateUserRequest request
