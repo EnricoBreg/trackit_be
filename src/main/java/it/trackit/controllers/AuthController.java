@@ -53,6 +53,7 @@ public class AuthController {
     cookie.setPath("/api/auth/refresh");
     cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration()); // 7 days
     cookie.setSecure(true);
+    cookie.setAttribute("SameSite", "None");
     response.addCookie(cookie);
 
     return ResponseEntity.ok(new LoginResponse(accessToken, userDto));
