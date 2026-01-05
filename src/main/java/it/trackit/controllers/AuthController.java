@@ -46,6 +46,8 @@ public class AuthController {
     var accessToken = jwtService.generateAccessToken(user);
     var refreshToken = jwtService.generateRefreshToken(user);
 
+    var userDto = userMapper.toDto(user);
+
     var cookie = new Cookie("refresh-token", refreshToken);
     cookie.setHttpOnly(true);
     cookie.setPath("/api/auth/refresh");
@@ -53,7 +55,7 @@ public class AuthController {
     cookie.setSecure(true);
     response.addCookie(cookie);
 
-    return ResponseEntity.ok(new JwtResponse(accessToken));
+    return ResponseEntity.ok(new JwtResponse(accessToken, userDto));
   }
 
   @PostMapping("/refresh")
@@ -68,7 +70,9 @@ public class AuthController {
     var user = userRepository.findById(userId).orElseThrow();
     var accessToken = jwtService.generateAccessToken(user);
 
-    return ResponseEntity.ok(new JwtResponse(accessToken));
+    var userDto = userMapper.toDto(user);
+
+    return ResponseEntity.ok(new JwtResponse(accessToken, userDto));
   }
 
   @GetMapping("/me")
