@@ -1,8 +1,8 @@
 package it.trackit.controllers;
 
 import it.trackit.config.JwtConfig;
-import it.trackit.dtos.JwtResponse;
 import it.trackit.dtos.LoginRequest;
+import it.trackit.dtos.LoginResponse;
 import it.trackit.dtos.UserDto;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
@@ -31,7 +31,7 @@ public class AuthController {
   private final UserMapper userMapper;
 
   @PostMapping("/login")
-  public ResponseEntity<JwtResponse> login(
+  public ResponseEntity<LoginResponse> login(
     @Valid @RequestBody LoginRequest request,
     HttpServletResponse response
   ) {
@@ -55,11 +55,11 @@ public class AuthController {
     cookie.setSecure(true);
     response.addCookie(cookie);
 
-    return ResponseEntity.ok(new JwtResponse(accessToken, userDto));
+    return ResponseEntity.ok(new LoginResponse(accessToken, userDto));
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<JwtResponse> refresh(
+  public ResponseEntity<LoginResponse> refresh(
     @CookieValue("refresh-token") String refreshToken
   ) {
     if (!jwtService.validateToken(refreshToken)) {
@@ -72,7 +72,7 @@ public class AuthController {
 
     var userDto = userMapper.toDto(user);
 
-    return ResponseEntity.ok(new JwtResponse(accessToken, userDto));
+    return ResponseEntity.ok(new LoginResponse(accessToken, userDto));
   }
 
   @GetMapping("/me")
