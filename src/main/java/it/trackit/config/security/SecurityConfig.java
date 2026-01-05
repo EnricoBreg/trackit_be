@@ -112,6 +112,9 @@ public class SecurityConfig {
     // (Opzionale) Esposizione di header specifici per il frontend
     configuration.addExposedHeader("Authorization");
 
+    // Per permettere l'invio di richieste che hanno header: Access-Control-Allow-Credentials
+    configuration.setAllowCredentials(true);
+
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     // applicazione delle regole a tutti gli endpoint
     source.registerCorsConfiguration("/**", configuration);
