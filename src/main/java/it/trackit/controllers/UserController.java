@@ -1,12 +1,14 @@
 package it.trackit.controllers;
 
 import it.trackit.commons.exceptions.UserNotFoundException;
+import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.RegisterUserRequest;
 import it.trackit.dtos.UpdateUserRequest;
 import it.trackit.dtos.UserDto;
 import it.trackit.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,8 +28,8 @@ public class UserController {
 
   @GetMapping
   @PreAuthorize("isAuthenticated()")
-  public List<UserDto> getAllUsers() {
-    return userService.getAllUsers();
+  public PaginatedResponse<UserDto> getAllUsers(Pageable pageable) {
+    return userService.getAllUsers(pageable);
   }
 
   @GetMapping("/{id}")

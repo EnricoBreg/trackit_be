@@ -1,6 +1,8 @@
 package it.trackit.services;
 
 import it.trackit.commons.exceptions.UserNotFoundException;
+import it.trackit.commons.utils.DomainUtils;
+import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.RegisterUserRequest;
 import it.trackit.dtos.UpdateUserRequest;
 import it.trackit.dtos.UserDto;
@@ -8,11 +10,11 @@ import it.trackit.entities.User;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -22,9 +24,10 @@ public class UserService {
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
-  public List<UserDto> getAllUsers() {
-    var users = userRepository.findAll();
-    return users.stream().map(userMapper::toDto).toList();
+  public PaginatedResponse<UserDto> getAllUsers(Pageable pageable) {
+    Page<User> page = userRepository.findAll(pageable);
+    var users = page.getContent().stream().map(userMapper::toDto).toList();
+    return DomainUtils.buildPaginatedResponse(page, users);
   }
 
   public UserDto getUser(Long id) {
