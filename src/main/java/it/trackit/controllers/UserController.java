@@ -30,9 +30,10 @@ public class UserController {
   @GetMapping
   @PreAuthorize("isAuthenticated()")
   public PaginatedResponse<UserDto> getAllUsers(
-    @PageableDefault(size = 15, sort = {"nome"}) Pageable pageable
+    @PageableDefault(size = 15, sort = {"nome"}) Pageable pageable,
+    @RequestParam(name = "search", required = false) String searchText
   ) {
-    return userService.getAllUsers(pageable);
+    return userService.getAllUsers(pageable, searchText);
   }
 
   @GetMapping("/{id}")

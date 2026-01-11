@@ -24,8 +24,9 @@ public class UserService {
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
-  public PaginatedResponse<UserDto> getAllUsers(Pageable pageable) {
-    Page<User> page = userRepository.findAll(pageable);
+  public PaginatedResponse<UserDto> getAllUsers(Pageable pageable, String searchText) {
+    Page<User> page = searchText != null ? userRepository.searchUsers(searchText, pageable)
+                                         : userRepository.findAll(pageable);
     var users = page.getContent().stream().map(userMapper::toDto).toList();
     return DomainUtils.buildPaginatedResponse(page, users);
   }
