@@ -3,8 +3,11 @@ package it.trackit.services;
 import it.trackit.commons.exceptions.ProjectNotFoundException;
 import it.trackit.commons.exceptions.RoleNotFoundException;
 import it.trackit.commons.exceptions.UserNotFoundException;
+import it.trackit.commons.utils.DomainUtils;
+import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
+import it.trackit.entities.Project;
 import it.trackit.entities.ProjectMember;
 import it.trackit.entities.ProjectMemberKey;
 import it.trackit.mappers.ProjectMapper;
@@ -12,6 +15,8 @@ import it.trackit.mappers.TaskMapper;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +41,12 @@ public class ProjectService {
   private final UserMapper userMapper;
 
 
-  public List<ProjectDto> getAllProjects() {
-    var projects = projectRepository.findAll();
-    return projects.stream().map(projectMapper::toDto).toList();
+  public PaginatedResponse<ProjectDto> getAllProjects(Pageable pageable, String searchText) {
+    Page<Project> page = searchText != null ? projectRepository.searchProjects(searchText, pageable)
+                                            : projectRepository.findAll(pageable);
+
+    var projects = page.getContent().stream().map(projectMapper::toDto).toList();
+    return DomainUtils.buildPaginatedResponse(page, projects);
   }
 
   public ProjectDto getProject(UUID projectId) {

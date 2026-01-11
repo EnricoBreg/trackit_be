@@ -3,6 +3,7 @@ package it.trackit.controllers;
 import it.trackit.commons.exceptions.ProjectNotFoundException;
 import it.trackit.commons.exceptions.RoleNotFoundException;
 import it.trackit.commons.exceptions.UserNotFoundException;
+import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
 import it.trackit.repositories.ProjectRepository;
@@ -10,6 +11,8 @@ import it.trackit.repositories.TaskRepository;
 import it.trackit.services.ProjectService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +36,10 @@ public class ProjectController {
    * @return lista di {@link ProjectDto}
    */
   @GetMapping
-  public List<ProjectDto> getProjects() {
-    return projectService.getAllProjects();
+  public PaginatedResponse<ProjectDto> getProjects(
+    @PageableDefault(size = 15, sort = {"nome"}) Pageable pageable,
+    @RequestParam(name = "search", required = false) String searchText) {
+    return projectService.getAllProjects(pageable, searchText);
   }
 
   @PostMapping
