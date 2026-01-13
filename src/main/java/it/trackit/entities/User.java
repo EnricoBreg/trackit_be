@@ -1,5 +1,6 @@
 package it.trackit.entities;
 
+import it.trackit.config.security.auth.GlobalRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,11 +32,14 @@ public class User {
   @Column(name = "password")
   private String password;
 
-  @Column(name = "is_super_admin")
-  private Boolean isSuperAdmin;
+  @Column(name = "global_role", nullable = false)
+  @Enumerated(EnumType.STRING)
+  @Builder.Default
+  private GlobalRole globalRole = GlobalRole.ROLE_USER;
 
-  @Column(name = "is_active")
-  private Boolean isActive;
+  @Column(name = "is_active", nullable = false)
+  @Builder.Default
+  private Boolean isActive = true;
 
   public String getDisplayName() {
     String displayName = "";

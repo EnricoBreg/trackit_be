@@ -4,14 +4,14 @@
 -- Password in chiaro: "password"
 -- L'hash inizia con $2a$10$ ed è generato con BCrypt
 
-INSERT INTO users (username, nome, cognome, email, password, is_super_admin, is_active)
+INSERT INTO users (username, nome, cognome, email, password, global_role, is_active)
 VALUES (
          'super',                                                         -- username
          'Super',                                                            -- nome
          'Admin',                                                         -- cognome
          'super@trackit.it',                                                 -- email
          '$2a$12$vU84zOQCeOpPLiVxsypTb.bS6uiBVMNFiooPYS3E60vtC.PMILHzG', -- password (hashata)
-         TRUE,                                                       -- is_super_admin
+         'ROLE_SUPER_ADMIN',                                            -- is_super_admin
          TRUE                                                             -- is_active
        );
 

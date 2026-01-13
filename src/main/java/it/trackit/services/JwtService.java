@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class JwtService {
 
-  private final static String ROLE_CLAIM_TAG = "role";
+  private final static String ROLE_CLAIM_TAG = "global_role";
 
   private final UserRepository userRepository;
   private final JwtConfig jwtConfig;
@@ -31,13 +31,11 @@ public class JwtService {
   }
 
   private String generateToken(User user, long tokenExpiration) {
-    String role = Boolean.TRUE.equals(user.getIsSuperAdmin()) ? "ROLE_SUPER_ADMIN" : "ROLE_USER";
-
     return Jwts.builder()
       .subject(user.getId().toString())
       .claim("nome", user.getNome())
       .claim("email", user.getEmail())
-      .claim(ROLE_CLAIM_TAG, role)
+      .claim(ROLE_CLAIM_TAG, user.getGlobalRole().name())
       .issuedAt(new Date())
       .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
       .signWith(jwtConfig.getSecretKey())

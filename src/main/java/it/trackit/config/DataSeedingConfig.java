@@ -1,5 +1,6 @@
 package it.trackit.config;
 
+import it.trackit.config.security.auth.GlobalRole;
 import it.trackit.entities.Project;
 import it.trackit.entities.User;
 import it.trackit.repositories.ProjectRepository;
@@ -78,7 +79,7 @@ public class DataSeedingConfig {
       utente.setEmail(email);
       utente.setPassword(password);
       utente.setIsActive(true);
-      utente.setIsSuperAdmin(false);
+      utente.setGlobalRole(GlobalRole.ROLE_USER);
 
       utenti.add(utente);
 

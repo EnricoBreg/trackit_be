@@ -44,7 +44,7 @@ public class UserService {
   public UserDto registerUser(RegisterUserRequest request) {
     var newUser = userMapper.toEntity(request);
     newUser.setIsActive(true);
-    newUser.setIsSuperAdmin(false);
+    // newUser.setGlobalRole(GlobalRole.ROLE_USER);
     newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 
     userRepository.save(newUser);
