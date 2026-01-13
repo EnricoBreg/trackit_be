@@ -1,4 +1,4 @@
-package it.trackit.config.security.auth;
+package it.trackit.config.security.permissions.project;
 
 /**
  * ProjectPermission definisce un insieme di permessi specifici per i progetti

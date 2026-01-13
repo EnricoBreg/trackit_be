@@ -1,4 +1,4 @@
-package it.trackit.config.security.auth;
+package it.trackit.config.security.permissions.global;
 
 /**
  * GlobalRole definisce un insieme di ruoli che rappresentano la gerarchia

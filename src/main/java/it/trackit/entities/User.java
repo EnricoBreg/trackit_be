@@ -1,6 +1,6 @@
 package it.trackit.entities;
 
-import it.trackit.config.security.auth.GlobalRole;
+import it.trackit.config.security.permissions.global.GlobalRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -51,5 +51,9 @@ public class User {
     }
     displayName += " (" + getUsername() + ")";
     return displayName;
+  }
+
+  public boolean isSuperAdmin() {
+    return globalRole == GlobalRole.ROLE_SUPER_ADMIN;
   }
 }

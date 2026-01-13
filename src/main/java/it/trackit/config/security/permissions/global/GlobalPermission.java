@@ -1,4 +1,4 @@
-package it.trackit.config.security.auth;
+package it.trackit.config.security.permissions.global;
 
 /**
  * GlobalPermission definisce un insieme di permessi globali che possono

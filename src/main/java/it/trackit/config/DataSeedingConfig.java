@@ -1,6 +1,6 @@
 package it.trackit.config;
 
-import it.trackit.config.security.auth.GlobalRole;
+import it.trackit.config.security.permissions.global.GlobalRole;
 import it.trackit.entities.Project;
 import it.trackit.entities.User;
 import it.trackit.repositories.ProjectRepository;
