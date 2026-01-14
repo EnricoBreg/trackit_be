@@ -2,10 +2,9 @@ package it.trackit.services;
 
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.commons.utils.DomainUtils;
-import it.trackit.dtos.PaginatedResponse;
-import it.trackit.dtos.RegisterUserRequest;
-import it.trackit.dtos.UpdateUserRequest;
-import it.trackit.dtos.UserDto;
+import it.trackit.config.security.permissions.global.GlobalPermissionResolver;
+import it.trackit.config.security.permissions.project.ProjectPermission;
+import it.trackit.dtos.*;
 import it.trackit.entities.User;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
@@ -15,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -73,5 +74,18 @@ public class UserService {
 
   public void save(User user) {
     userRepository.save(user);
+  }
+
+  public UserDetailsDto buildUserDetailsDto(User user) {
+    var userDto = userMapper.toDto(user);
+    var globalPermissions = GlobalPermissionResolver.forRole(user.getGlobalRole());
+    //var projectPermission = ProjectPermissionResolver.resolve(...)
+    Set<ProjectPermission> projectPermissions = Set.of();
+
+    return UserDetailsDto.builder()
+      .user(userDto)
+      .globalPermissions(globalPermissions)
+      .projectPermissions(projectPermissions)
+      .build();
   }
 }

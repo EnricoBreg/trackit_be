@@ -9,7 +9,7 @@ import java.util.Set;
 @Component
 public class ProjectPermissionResolver {
 
-  public Set<ProjectPermission> resolve(
+  public static Set<ProjectPermission> resolve(
     User user,
     ProjectMember membership
   ) {

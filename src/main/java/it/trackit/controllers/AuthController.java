@@ -3,10 +3,11 @@ package it.trackit.controllers;
 import it.trackit.config.JwtConfig;
 import it.trackit.dtos.LoginRequest;
 import it.trackit.dtos.LoginResponse;
-import it.trackit.dtos.UserDto;
+import it.trackit.dtos.UserDetailsDto;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
 import it.trackit.services.JwtService;
+import it.trackit.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class AuthController {
   private final JwtConfig jwtConfig;
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final UserService userService;
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(
@@ -46,7 +48,7 @@ public class AuthController {
     var accessToken = jwtService.generateAccessToken(user);
     var refreshToken = jwtService.generateRefreshToken(user);
 
-    var userDto = userMapper.toDto(user);
+    var userDetails = userService.buildUserDetailsDto(user);
 
     var cookie = new Cookie("refresh-token", refreshToken);
     cookie.setHttpOnly(true);
@@ -56,7 +58,7 @@ public class AuthController {
     cookie.setAttribute("SameSite", "None");
     response.addCookie(cookie);
 
-    return ResponseEntity.ok(new LoginResponse(accessToken, userDto));
+    return ResponseEntity.ok(new LoginResponse(accessToken, userDetails));
   }
 
   @PostMapping("/refresh")
@@ -71,13 +73,13 @@ public class AuthController {
     var user = userRepository.findById(userId).orElseThrow();
     var accessToken = jwtService.generateAccessToken(user);
 
-    var userDto = userMapper.toDto(user);
+    var userDetails = userService.buildUserDetailsDto(user);
 
-    return ResponseEntity.ok(new LoginResponse(accessToken, userDto));
+    return ResponseEntity.ok(new LoginResponse(accessToken, userDetails));
   }
 
   @GetMapping("/me")
-  public ResponseEntity<UserDto> me() {
+  public ResponseEntity<UserDetailsDto> me() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     var userId = (Long)authentication.getPrincipal();
 
@@ -86,9 +88,9 @@ public class AuthController {
       return ResponseEntity.notFound().build();
     }
 
-    var userDto = userMapper.toDto(user);
+    var userDetails = userService.buildUserDetailsDto(user);
 
-    return ResponseEntity.ok(userDto);
+    return ResponseEntity.ok(userDetails);
   }
 
   @ExceptionHandler({BadCredentialsException.class})
