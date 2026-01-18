@@ -50,7 +50,7 @@ public class UserController {
   }
 
   @PostMapping
-  @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
+  @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_ADMIN')")
   public ResponseEntity<?> registerUser(
       @Valid @RequestBody RegisterUserRequest request,
       UriComponentsBuilder uriBuilder

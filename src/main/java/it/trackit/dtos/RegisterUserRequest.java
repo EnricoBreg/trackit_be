@@ -7,6 +7,12 @@ import lombok.Data;
 
 @Data
 public class RegisterUserRequest {
+    @Size(max = 255, message = "The first name must be max 255 characters")
+    private String nome;
+
+    @Size(max = 255, message = "The last name must be max 255 characters")
+    private String cognome;
+
     @NotBlank(message = "Username is required")
     @Size(max = 255, message = "The username must be max 255 characters")
     private String username;

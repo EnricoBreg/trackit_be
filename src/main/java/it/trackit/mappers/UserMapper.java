@@ -10,6 +10,8 @@ import org.mapstruct.*;
 public interface UserMapper {
   @Mapping(target = "nominativo", expression = "java(user.getDisplayName())")
   UserDto toDto(User user);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   User toEntity(RegisterUserRequest request);
 
   // il valore nullValuePropertyMappingStrategy dice a mapstruct di ignorare
