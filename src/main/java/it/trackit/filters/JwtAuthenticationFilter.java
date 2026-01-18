@@ -40,6 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     var userId = jwtService.getUserIdFromToken(token);
     var authorities = jwtService.getAuthoritiesFromToken(token);
 
+    System.out.println("Authorities: " + (authorities.stream().map(a -> a.toString() + " ").toList()));
+
     var authentication = new UsernamePasswordAuthenticationToken(
       userId,
       null,

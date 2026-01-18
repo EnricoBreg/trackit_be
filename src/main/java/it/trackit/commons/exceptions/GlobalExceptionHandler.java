@@ -19,12 +19,13 @@ public class GlobalExceptionHandler {
       ErrorDto.builder()
         .error("Invalid request body")
         .message(exception.getMessage())
+        .timestamp(System.currentTimeMillis())
         .build()
     );
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> handleValidationErrors(
+  public ResponseEntity<ErrorDto> handleValidationErrors(
     MethodArgumentNotValidException exception
   ) {
     var errors = new HashMap<String, String>();
@@ -33,7 +34,14 @@ public class GlobalExceptionHandler {
       errors.put(e.getField(), e.getDefaultMessage());
     });
 
-    return ResponseEntity.badRequest().body(errors);
+    var error = ErrorDto.builder()
+      .error("VALIDATION_ERROR")
+      .message("Validation error")
+      .errors(errors)
+      .timestamp(System.currentTimeMillis())
+      .build();
+
+    return ResponseEntity.badRequest().body(error);
   }
 
   /*
@@ -47,7 +55,7 @@ public class GlobalExceptionHandler {
    * l'annotazione @Validated.
    */
   @ExceptionHandler({ConstraintViolationException.class})
-  public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException exception) {
+  public ResponseEntity<ErrorDto> handleConstraintViolation(ConstraintViolationException exception) {
     Map<String, String> errors = new HashMap<>();
 
     exception.getConstraintViolations().forEach(violation -> {
@@ -58,6 +66,13 @@ public class GlobalExceptionHandler {
       errors.put(fieldName, message != null ? message : "Invalid value");
     });
 
-    return ResponseEntity.badRequest().body(errors);
+    var error = ErrorDto.builder()
+      .error("VALIDATION_ERROR")
+      .message("Validation error")
+      .errors(errors)
+      .timestamp(System.currentTimeMillis())
+      .build();
+
+    return ResponseEntity.badRequest().body(error);
   }
 }

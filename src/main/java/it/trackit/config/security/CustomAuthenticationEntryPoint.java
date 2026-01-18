@@ -33,7 +33,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     ErrorDto payload = ErrorDto.builder()
       .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
       .message("Autenticazione fallita.")
-      .path(request.getServletPath())
       .timestamp(System.currentTimeMillis())
       .build();
 

@@ -1,5 +1,7 @@
 package it.trackit.controllers;
 
+import it.trackit.commons.exceptions.ErrorDto;
+import it.trackit.commons.exceptions.UserExistsException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.RegisterUserRequest;
@@ -16,8 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -76,7 +76,25 @@ public class UserController {
   }
 
   @ExceptionHandler({UserNotFoundException.class})
-  public ResponseEntity<Map<String, String>> handleUserNotFound() {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found."));
+  public ResponseEntity<ErrorDto> handleUserNotFound(UserNotFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+      ErrorDto.builder()
+        .error("NOT_FOUND")
+        .message(ex.getMessage())
+        .timestamp(System.currentTimeMillis())
+        .build()
+    );
+  }
+
+  @ExceptionHandler({UserExistsException.class})
+  public ResponseEntity<ErrorDto> getCurrentAuthenticatedUser(UserExistsException ex) {
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
+      ErrorDto.builder()
+        .error("VALIDATION_ERROR")
+        .message(ex.getMessage())
+        .errors(ex.getFieldErrors())
+        .timestamp(System.currentTimeMillis())
+        .build()
+    );
   }
 }

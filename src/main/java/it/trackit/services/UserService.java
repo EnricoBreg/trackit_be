@@ -1,5 +1,6 @@
 package it.trackit.services;
 
+import it.trackit.commons.exceptions.UserExistsException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.commons.utils.DomainUtils;
 import it.trackit.config.security.permissions.global.GlobalPermissionResolver;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -43,6 +45,19 @@ public class UserService {
    * @return dto rappresentante l'utente registrato
    */
   public UserDto registerUser(RegisterUserRequest request) {
+    var user = userRepository.findByUsername(request.getUsername()).orElse(null);
+    if (user != null) {
+      throw new UserExistsException("User already exists", Map.of(
+        "username", request.getUsername() + " already exists"
+      ));
+    }
+    user = userRepository.findByEmail(request.getEmail()).orElse(null);
+    if (user != null) {
+      throw new UserExistsException("User already exists", Map.of(
+        "email", request.getEmail() + " already exists"
+      ));
+    }
+
     var newUser = userMapper.toEntity(request);
     newUser.setIsActive(true);
     // newUser.setGlobalRole(GlobalRole.ROLE_USER);
@@ -70,10 +85,6 @@ public class UserService {
   public UserDto getCurrentAuthenticatedUser() {
     String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     return getUser(Long.valueOf(userId));
-  }
-
-  public void save(User user) {
-    userRepository.save(user);
   }
 
   public UserDetailsDto buildUserDetailsDto(User user) {

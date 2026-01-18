@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class ErrorDto {
   private String error;
   private String message;
-  private String path;
   private long timestamp;
+  private Map<String, String> errors;
 }
 
 

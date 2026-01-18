@@ -33,7 +33,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     ErrorDto payload = ErrorDto.builder()
       .error(HttpStatus.FORBIDDEN.getReasonPhrase())
       .message("Non hai i permessi per eseguire questa azione o il token è mancante.")
-      .path(request.getServletPath())
       .timestamp(System.currentTimeMillis())
       .build();
 
