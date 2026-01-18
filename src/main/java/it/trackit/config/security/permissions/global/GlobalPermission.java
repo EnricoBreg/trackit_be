@@ -17,7 +17,15 @@ package it.trackit.config.security.permissions.global;
  */
 public enum GlobalPermission {
   // Users
+  USER_CREATE,
+  USER_EDIT,
+  USER_DELETE,
   USER_RESET_PASSWORD,
   USER_ENABLE_DISABLE,
-  USER_ROLE_ASSIGN
+  USER_ROLE_ASSIGN,
+
+  // Project
+  PROJECT_CREATE,
+  PROJECT_EDIT,
+  PROJECT_DELETE,
 }
