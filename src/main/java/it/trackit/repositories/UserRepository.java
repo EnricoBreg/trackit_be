@@ -18,6 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     SELECT u FROM User u
     WHERE LOWER(u.nome) LIKE LOWER(CONCAT('%', :searchText, '%'))
       OR LOWER(u.cognome) LIKE LOWER(CONCAT('%', :searchText, '%'))
+      OR LOWER(u.username) LIKE LOWER(CONCAT('%', :searchText, '%'))
   """)
   Page<User> searchUsers(@Param("searchText") String searchTerm, Pageable pageable);
 }
