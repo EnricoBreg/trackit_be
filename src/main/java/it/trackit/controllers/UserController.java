@@ -70,7 +70,7 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("@hasRole('ROLE_SUPER_ADMIN')")
+  @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_ADMIN')")
   public void deleteUser(@PathVariable("id") Long id) {
     userService.deleteUser(id);
   }
