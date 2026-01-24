@@ -3,10 +3,7 @@ package it.trackit.controllers;
 import it.trackit.commons.exceptions.ErrorDto;
 import it.trackit.commons.exceptions.UserExistsException;
 import it.trackit.commons.exceptions.UserNotFoundException;
-import it.trackit.dtos.PaginatedResponse;
-import it.trackit.dtos.RegisterUserRequest;
-import it.trackit.dtos.UpdateUserRequest;
-import it.trackit.dtos.UserDto;
+import it.trackit.dtos.*;
 import it.trackit.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -63,10 +60,20 @@ public class UserController {
   @PutMapping("/{id}")
   @PreAuthorize("@userSecurityRules.isCurrentAuthenticatedUser(#userId)")
   public UserDto updateUser(
-          @PathVariable("id") Long userId,
-          @RequestBody UpdateUserRequest request
+      @PathVariable("id") Long userId,
+      @RequestBody UpdateUserRequest request
   ) {
     return userService.updateUser(userId, request);
+  }
+
+  @PostMapping("/{id}/password")
+  @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_ADMIN')")
+  public ResponseEntity<?> changePassword(
+      @PathVariable("id") Long userId,
+      @Valid @RequestBody ChangePasswordRequest request
+  ) {
+    userService.changeUserPassword(userId, request.getNewPassword());
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{id}")

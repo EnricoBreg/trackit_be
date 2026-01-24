@@ -87,6 +87,12 @@ public class UserService {
     return getUser(Long.valueOf(userId));
   }
 
+  public void changeUserPassword(Long userId, String newPassword) {
+    var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    user.setPassword(passwordEncoder.encode(newPassword.trim()));
+    userRepository.save(user);
+  }
+
   public UserDetailsDto buildUserDetailsDto(User user) {
     var userDto = userMapper.toDto(user);
     var globalPermissions = GlobalPermissionResolver.forRole(user.getGlobalRole());
