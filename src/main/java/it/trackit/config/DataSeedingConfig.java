@@ -78,7 +78,7 @@ public class DataSeedingConfig {
       utente.setUsername(username);
       utente.setEmail(email);
       utente.setPassword(password);
-      utente.setIsActive(true);
+      utente.setActive(true);
       utente.setGlobalRole(GlobalRole.ROLE_USER);
 
       utenti.add(utente);
