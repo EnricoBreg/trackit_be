@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -26,13 +25,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                        AuthenticationException authException) throws IOException, ServletException {
 
     // Impostazione delle status 401
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
     // Body della risposta
     ErrorDto payload = ErrorDto.builder()
-      .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-      .message("Autenticazione fallita.")
+      .error("AUTH_ERROR")
+      .message("Autenticazione richiesta, permesso negato.")
       .timestamp(System.currentTimeMillis())
       .build();
 
