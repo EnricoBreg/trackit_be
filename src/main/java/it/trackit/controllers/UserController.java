@@ -7,6 +7,7 @@ import it.trackit.dtos.*;
 import it.trackit.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Locale;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
@@ -23,6 +26,12 @@ public class UserController {
 
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
+  private final MessageSource messageSource;
+
+  @GetMapping("/greetings")
+  public String greetings(Locale locale) {
+    return messageSource.getMessage("greeting", null, locale);
+  }
 
   @GetMapping
   @PreAuthorize("isAuthenticated()")
