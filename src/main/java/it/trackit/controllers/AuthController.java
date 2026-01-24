@@ -6,8 +6,8 @@ import it.trackit.config.security.UserPrincipal;
 import it.trackit.dtos.LoginRequest;
 import it.trackit.dtos.LoginResponse;
 import it.trackit.dtos.UserDetailsDto;
-import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.UserRepository;
+import it.trackit.services.I18nService;
 import it.trackit.services.JwtService;
 import it.trackit.services.UserService;
 import jakarta.servlet.http.Cookie;
@@ -30,8 +30,9 @@ public class AuthController {
   private final JwtService jwtService;
   private final JwtConfig jwtConfig;
   private final UserRepository userRepository;
-  private final UserMapper userMapper;
   private final UserService userService;
+
+  private final I18nService i18nService;
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(
@@ -98,13 +99,13 @@ public class AuthController {
   public ResponseEntity<ErrorDto> handleBadCredentialsException(AuthenticationException ex) {
     String message;
     if (ex instanceof BadCredentialsException) {
-      message = "Credenziali non valide.";
+      message = i18nService.getLocalizedString("login.badCredentials");
     } else if (ex instanceof DisabledException || ex instanceof LockedException) {
-      message = "Account bloccato. Contattare l'amministratore.";
+      message = i18nService.getLocalizedString("login.accountBloccato");
     } else if (ex instanceof AccountExpiredException) {
-      message = "Account scaduto. Contattare l'amministratore.";
+      message = i18nService.getLocalizedString("login.accountScaduto");
     } else {
-      message = "Errore di autenticazione.";
+      message = i18nService.getLocalizedString("login.erroreGenerico");
     }
 
     ErrorDto errorPayload = ErrorDto.builder()

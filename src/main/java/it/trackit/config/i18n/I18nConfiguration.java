@@ -20,7 +20,7 @@ public class I18nConfiguration {
   @Bean
   public ResourceBundleMessageSource messageSource() {
     ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-    source.setBasename("i18n/messages"); // nome base dei resource bundles
+    source.setBasenames("i18n/messages", "i18n/exceptions"); // nomi base dei resource bundles
     source.setDefaultEncoding("UTF-8");
     source.setUseCodeAsDefaultMessage(true);
     source.setCacheMillis(3600); // Cache di 1h
