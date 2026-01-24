@@ -1,6 +1,8 @@
 package it.trackit.controllers;
 
+import it.trackit.commons.exceptions.ErrorDto;
 import it.trackit.config.JwtConfig;
+import it.trackit.config.security.UserPrincipal;
 import it.trackit.dtos.LoginRequest;
 import it.trackit.dtos.LoginResponse;
 import it.trackit.dtos.UserDetailsDto;
@@ -14,9 +16,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,9 +82,9 @@ public class AuthController {
   @GetMapping("/me")
   public ResponseEntity<UserDetailsDto> me() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
-    var userId = (Long) authentication.getPrincipal();
+    UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-    var user = userRepository.findById(userId).orElse(null);
+    var user = userRepository.findById(principal.getUser().getId()).orElse(null);
     if (user == null) {
       return ResponseEntity.notFound().build();
     }
@@ -93,8 +94,25 @@ public class AuthController {
     return ResponseEntity.ok(userDetails);
   }
 
-  @ExceptionHandler({BadCredentialsException.class})
-  public ResponseEntity<Void> handleBadCredentialsException() {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+  @ExceptionHandler({AuthenticationException.class})
+  public ResponseEntity<ErrorDto> handleBadCredentialsException(AuthenticationException ex) {
+    String message;
+    if (ex instanceof BadCredentialsException) {
+      message = "Credenziali non valide.";
+    } else if (ex instanceof DisabledException || ex instanceof LockedException) {
+      message = "Account bloccato. Contattare l'amministratore.";
+    } else if (ex instanceof AccountExpiredException) {
+      message = "Account scaduto. Contattare l'amministratore.";
+    } else {
+      message = "Errore di autenticazione.";
+    }
+
+    ErrorDto errorPayload = ErrorDto.builder()
+      .error("AUTH_ERROR")
+      .message(message)
+      .timestamp(System.currentTimeMillis())
+      .build();
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorPayload);
   }
 }

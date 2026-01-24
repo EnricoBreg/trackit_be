@@ -1,6 +1,6 @@
 package it.trackit.config.security.permissions.global;
 
-import it.trackit.entities.User;
+import it.trackit.config.security.UserPrincipal;
 import it.trackit.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,12 +15,12 @@ public class GlobalPermissionChecker {
   private final UserRepository userRepository;
 
   public boolean hasPermission(GlobalPermission permission) {
-    var userId = (User) SecurityContextHolder
+    UserPrincipal principal = (UserPrincipal) SecurityContextHolder
       .getContext()
       .getAuthentication()
       .getPrincipal();
 
-    var user = userRepository.findById(userId.getId()).orElse(null);
+    var user = principal.getUser();
     if (user == null) return false;
 
     return GlobalPermissionResolver.forRole(user.getGlobalRole()).contains(permission);

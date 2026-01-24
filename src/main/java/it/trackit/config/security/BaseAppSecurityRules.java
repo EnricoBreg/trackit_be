@@ -6,16 +6,19 @@ public class BaseAppSecurityRules {
 
   protected Long getAuthenticatedUserId() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
-    var principal = authentication.getPrincipal();
-    if (principal instanceof Number) {
-      return ((Number) principal).longValue();
-    }
-    return Long.parseLong(principal.toString());
+    UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+    return principal.getUser().getId();
   }
 
   protected boolean isCurrentSuperAdmin() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     return authentication.getAuthorities().stream()
       .anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"));
+  }
+
+  protected boolean isCurrentAdmin() {
+    var authentication = SecurityContextHolder.getContext().getAuthentication();
+    return authentication.getAuthorities().stream()
+      .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
   }
 }

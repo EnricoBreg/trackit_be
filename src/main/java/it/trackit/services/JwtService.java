@@ -7,11 +7,9 @@ import it.trackit.config.JwtConfig;
 import it.trackit.entities.User;
 import it.trackit.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -32,10 +30,10 @@ public class JwtService {
 
   private String generateToken(User user, long tokenExpiration) {
     return Jwts.builder()
-      .subject(user.getId().toString())
+      .subject(user.getUsername())
+      .claim("id", user.getId())
       .claim("nome", user.getNome())
       .claim("email", user.getEmail())
-      .claim(ROLE_CLAIM_TAG, user.getGlobalRole().name())
       .issuedAt(new Date())
       .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
       .signWith(jwtConfig.getSecretKey())
@@ -52,13 +50,12 @@ public class JwtService {
     }
   }
 
-  public Long getUserIdFromToken(String token) {
-    return Long.valueOf(getClaims(token).getSubject());
+  public String getUsernameFromToken(String token) {
+    return getClaims(token).getSubject();
   }
 
-  public List<SimpleGrantedAuthority> getAuthoritiesFromToken(String token) {
-    String role = (String)getClaims(token).get(ROLE_CLAIM_TAG);
-    return role != null ? List.of(new SimpleGrantedAuthority(role)) : List.of();
+  public Long getUserIdFromToken(String token) {
+    return Long.valueOf(getClaims(token).get("id").toString());
   }
 
   private Claims getClaims(String token) {

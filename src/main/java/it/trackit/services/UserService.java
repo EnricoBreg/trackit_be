@@ -3,6 +3,7 @@ package it.trackit.services;
 import it.trackit.commons.exceptions.UserExistsException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.commons.utils.DomainUtils;
+import it.trackit.config.security.UserPrincipal;
 import it.trackit.config.security.permissions.global.GlobalPermissionResolver;
 import it.trackit.config.security.permissions.project.ProjectPermission;
 import it.trackit.dtos.*;
@@ -59,7 +60,7 @@ public class UserService {
     }
 
     var newUser = userMapper.toEntity(request);
-    newUser.setIsActive(true);
+    newUser.setActive(true);
     // newUser.setGlobalRole(GlobalRole.ROLE_USER);
     newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -83,8 +84,8 @@ public class UserService {
   }
 
   public UserDto getCurrentAuthenticatedUser() {
-    String userId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-    return getUser(Long.valueOf(userId));
+    UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userMapper.toDto(principal.getUser());
   }
 
   public void changeUserPassword(Long userId, String newPassword) {

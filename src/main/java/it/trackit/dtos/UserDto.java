@@ -12,4 +12,5 @@ public class UserDto {
   private String nominativo;
   private String username;
   private String email;
+  private Boolean active;
 }

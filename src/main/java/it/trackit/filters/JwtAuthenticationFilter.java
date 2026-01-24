@@ -1,6 +1,8 @@
 package it.trackit.filters;
 
+import it.trackit.config.security.UserPrincipal;
 import it.trackit.services.JwtService;
+import it.trackit.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +24,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final static String TOKEN_PREFIX = "Bearer ";
 
   private final JwtService jwtService;
+  private final UserDetailsServiceImpl userDetailsService;
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(
+    HttpServletRequest request,
+    HttpServletResponse response,
+    FilterChain filterChain
+  ) throws ServletException, IOException {
     var authHeader = request.getHeader(AUTH_HEADER);
     if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
       filterChain.doFilter(request, response);
@@ -37,19 +44,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return;
     }
 
-    var userId = jwtService.getUserIdFromToken(token);
-    var authorities = jwtService.getAuthoritiesFromToken(token);
+    var username = jwtService.getUsernameFromToken(token);
 
-    var authentication = new UsernamePasswordAuthenticationToken(
-      userId,
-      null,
-      authorities
-    );
-    authentication.setDetails(
-      new WebAuthenticationDetailsSource().buildDetails(request)
-    );
+    if (SecurityContextHolder.getContext().getAuthentication() == null) {
+      UserPrincipal userDetails = (UserPrincipal) userDetailsService.loadUserByUsername(username);
 
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+      var authentication = new UsernamePasswordAuthenticationToken(
+        userDetails,
+        null,
+        userDetails.getAuthorities()
+      );
+
+      authentication.setDetails(
+        new WebAuthenticationDetailsSource().buildDetails(request)
+      );
+
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+//    var authorities = jwtService.getAuthoritiesFromToken(token);
+//
+//    var authentication = new UsernamePasswordAuthenticationToken(
+//      username,
+//      null,
+//      authorities
+//    );
+//    authentication.setDetails(
+//      new WebAuthenticationDetailsSource().buildDetails(request)
+//    );
+//
+//    SecurityContextHolder.getContext().setAuthentication(authentication);
 
     filterChain.doFilter(request, response);
   }
