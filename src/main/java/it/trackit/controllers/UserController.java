@@ -4,6 +4,7 @@ import it.trackit.commons.exceptions.ErrorDto;
 import it.trackit.commons.exceptions.UserExistsException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.*;
+import it.trackit.services.I18nService;
 import it.trackit.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class UserController {
 
   private final UserService userService;
   private final MessageSource messageSource;
+  private final I18nService i18nService;
 
   @GetMapping
   @PreAuthorize("isAuthenticated()")
@@ -87,7 +89,7 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
       ErrorDto.builder()
         .error("NOT_FOUND")
-        .message(ex.getMessage())
+        .message(i18nService.getLocalizedString(ex.getMessage()))
         .timestamp(System.currentTimeMillis())
         .build()
     );
@@ -98,7 +100,7 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
       ErrorDto.builder()
         .error("VALIDATION_ERROR")
-        .message(ex.getMessage())
+        .message(i18nService.getLocalizedString(ex.getMessage()))
         .errors(ex.getFieldErrors())
         .timestamp(System.currentTimeMillis())
         .build()

@@ -1,6 +1,8 @@
 package it.trackit.commons.exceptions;
 
+import it.trackit.services.I18nService;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,15 +12,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+  private final I18nService i18nService;
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorDto> handleUnreadableMessage(HttpMessageNotReadableException exception) {
     return ResponseEntity.badRequest().body(
       ErrorDto.builder()
-        .error("Invalid request body")
-        .message(exception.getMessage())
+        .error("INVALID_REQUEST_BODY")
+        .message(i18nService.getLocalizedString("http.invalidRequestBody"))
         .timestamp(System.currentTimeMillis())
         .build()
     );
@@ -31,12 +36,12 @@ public class GlobalExceptionHandler {
     var errors = new HashMap<String, String>();
 
     exception.getBindingResult().getFieldErrors().forEach(e -> {
-      errors.put(e.getField(), e.getDefaultMessage());
+      errors.put(e.getField(), i18nService.getLocalizedString(e.getDefaultMessage()));
     });
 
     var error = ErrorDto.builder()
       .error("VALIDATION_ERROR")
-      .message("Validation error")
+      .message(i18nService.getLocalizedString("validationError"))
       .errors(errors)
       .timestamp(System.currentTimeMillis())
       .build();
@@ -61,14 +66,14 @@ public class GlobalExceptionHandler {
     exception.getConstraintViolations().forEach(violation -> {
       String propertyPath = violation.getPropertyPath().toString();
       String fieldName = propertyPath.substring(propertyPath.lastIndexOf('.') + 1);
-      String message = violation.getMessage();
+      String message = i18nService.getLocalizedString(violation.getMessage());
 
-      errors.put(fieldName, message != null ? message : "Invalid value");
+      errors.put(fieldName, message != null ? message : i18nService.getLocalizedString("invalidValue"));
     });
 
     var error = ErrorDto.builder()
       .error("VALIDATION_ERROR")
-      .message("Validation error")
+      .message(i18nService.getLocalizedString("validationError"))
       .errors(errors)
       .timestamp(System.currentTimeMillis())
       .build();

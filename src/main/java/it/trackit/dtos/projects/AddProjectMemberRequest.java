@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class AddProjectMemberRequest {
-  @NotNull(message = "User ID non può essere null")
+  @NotNull(message = "user.idNotNull")
   private Long userId;
 
-  @NotNull(message = "role must not be null")
+  @NotNull(message = "role.notNull")
   private String role;
 }

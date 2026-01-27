@@ -3,7 +3,7 @@ package it.trackit.commons.exceptions;
 public class ForbiddenException extends RuntimeException {
 
   public ForbiddenException() {
-    super("Forbidden");
+    super("forbidden");
   }
 
   public ForbiddenException(String message) {

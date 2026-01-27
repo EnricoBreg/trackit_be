@@ -2,6 +2,7 @@ package it.trackit.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.trackit.commons.exceptions.ErrorDto;
+import it.trackit.services.I18nService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private final ObjectMapper objectMapper;
+  private final I18nService i18nService;
 
   @Override
   public void commence(HttpServletRequest request,
@@ -25,13 +27,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                        AuthenticationException authException) throws IOException, ServletException {
 
     // Impostazione delle status 401
-    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
     // Body della risposta
     ErrorDto payload = ErrorDto.builder()
       .error("AUTH_ERROR")
-      .message("Autenticazione richiesta, permesso negato.")
+      .message(i18nService.getLocalizedString("unauthorized"))
       .timestamp(System.currentTimeMillis())
       .build();
 

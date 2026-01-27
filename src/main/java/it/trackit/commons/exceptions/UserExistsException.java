@@ -9,7 +9,7 @@ public class UserExistsException extends RuntimeException {
   private Map<String, String> fieldErrors;
 
   public UserExistsException() {
-    this("User already exists");
+    this("user.exists");
   }
 
   public UserExistsException(String message) {
