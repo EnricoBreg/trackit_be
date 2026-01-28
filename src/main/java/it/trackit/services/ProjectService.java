@@ -4,6 +4,7 @@ import it.trackit.commons.exceptions.ProjectNotFoundException;
 import it.trackit.commons.exceptions.RoleNotFoundException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.commons.utils.DomainUtils;
+import it.trackit.config.security.UserPrincipal;
 import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
@@ -17,6 +18,7 @@ import it.trackit.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,12 +77,17 @@ public class ProjectService {
   @Transactional
   public TaskDto createProjectTask(UUID projectId, CreateProjectTaskRequest request) {
     var project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
-    var user = userRepository.findById(request.getAssegnatario()).orElseThrow(UserNotFoundException::new);
+    var assegnatario = userRepository.findById(request.getAssegnatario()).orElseThrow(UserNotFoundException::new);
+
+    UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    var reporter = assegnatario;
+    if (principal != null)
+      reporter = principal.getUser();
 
     var task = taskMapper.toEntity(request);
     project.addTask(task);
-    task.setAssegnatario(user);
-    task.setReporter(user); // TODO: da implementare il creatore del progetto
+    task.setAssegnatario(assegnatario);
+    task.setReporter(reporter);
 
     taskRepository.save(task);
 

@@ -35,7 +35,7 @@ public class Project {
   private String descrizione;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "stato")
+  @Column(name = "stato", nullable = false)
   private Stato stato = Stato.IDEA;
 
   @Column(name = "data_creazione", nullable = false)

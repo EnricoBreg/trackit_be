@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class AssignTaskRequest {
-  @NotNull(message = "task.assegnatarioRichiesto")
+  @NotNull(message = "task.assegnatario.richiesto")
   private Long userId;
 }
