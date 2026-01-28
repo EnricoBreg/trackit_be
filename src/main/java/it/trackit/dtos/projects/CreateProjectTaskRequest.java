@@ -2,7 +2,9 @@ package it.trackit.dtos.projects;
 
 import it.trackit.commons.utils.ValueOfEnum;
 import it.trackit.entities.Task;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -20,9 +22,8 @@ public class CreateProjectTaskRequest {
   private String stato;
 
   @NotNull(message = "task.priorita.richiesta")
-  @Min(value = 1, message = "task.priorita.valoreMinimoNonValido")
-  @Max(value = 5, message = "task.priorita.valoreMassimoNonValido")
-  private Integer priorita;
+  @ValueOfEnum(enumClass = Task.Priorita.class, message = "task.priorita.valoreNonValido")
+  private String priorita;
 
   @NotNull(message = "task.utenteAssegnatario.richiesto")
   private Long assegnatario;

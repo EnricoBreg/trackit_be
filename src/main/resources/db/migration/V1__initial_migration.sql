@@ -1,99 +1,91 @@
-create table users
-(
-    id    serial                not null,
-    username       varchar(100)          not null,
-    email          varchar(100)          not null,
-    password       text                  not null,
-    is_super_admin boolean default false not null,
-    is_active      boolean default true  not null,
-    constraint users_pk
-        primary key (id),
-    constraint users_pk_2
-        unique (username),
-    constraint users_pk_3
-        unique (email)
+CREATE TABLE users (
+  id SERIAL NOT NULL,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  password TEXT NOT NULL,
+  is_super_admin BOOLEAN NOT NULL DEFAULT FALSE,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  CONSTRAINT users_pk PRIMARY KEY (id),
+  CONSTRAINT users_username_uk UNIQUE (username),
+  CONSTRAINT users_email_uk UNIQUE (email)
 );
 
-
-create table projects
-(
-    uuid          uuid         default gen_random_uuid()  not null,
-    nome_progetto varchar(200)                            not null,
-    descrizione   text                                    not null,
-    stato         varchar(100)                            not null,
-    created_at    date         default date(now())        not null,
-    updated_at    date,
-    ended_at      date,
-    constraint project_pk_2
-        primary key (uuid),
-    constraint project_pk
-        unique (nome_progetto)
+CREATE TABLE projects (
+  uuid UUID NOT NULL DEFAULT gen_random_uuid(),
+  nome VARCHAR(200) NOT NULL,
+  descrizione TEXT NOT NULL,
+  stato VARCHAR(100) NOT NULL,
+  data_creazione DATE NOT NULL DEFAULT CURRENT_DATE,
+  data_inizio_lavorazione DATE,
+  data_ultima_modifica DATE,
+  data_scadenza DATE NOT NULL,
+  data_prevista_chiusura DATE,
+  data_chiusura DATE,
+  updated_at DATE,
+  ended_at DATE,
+  CONSTRAINT projects_pk PRIMARY KEY (uuid),
+  CONSTRAINT projects_nome_uk UNIQUE (nome)
 );
 
-
-create table project_roles
-(
-    id         serial       not null,
-    nome_ruolo varchar(200) not null,
-    constraint project_roles_pk
-        primary key (id)
+CREATE TABLE project_roles (
+  id SERIAL NOT NULL,
+  nome_ruolo VARCHAR(200) NOT NULL,
+  CONSTRAINT project_roles_pk PRIMARY KEY (id)
 );
 
-
-create table project_members
-(
-    project_id      uuid   not null,
-    user_id         serial not null,
-    project_role_id integer not null,
-    constraint project_members_pk
-        primary key (user_id, project_id),
-    constraint project_members_projects_uuid_fk
-      foreign key (project_id) references projects,
-    constraint project_members_users_id_fk
-        foreign key (user_id) references users (id),
-    constraint project_members_project_roles_id_fk
-        foreign key (project_role_id) references project_roles
+CREATE TABLE project_members (
+  project_id UUID NOT NULL,
+  user_id INTEGER NOT NULL,
+  project_role_id INTEGER NOT NULL,
+  CONSTRAINT project_members_pk PRIMARY KEY (user_id, project_id),
+  CONSTRAINT project_members_project_fk
+   FOREIGN KEY (project_id) REFERENCES projects (uuid),
+  CONSTRAINT project_members_user_fk
+   FOREIGN KEY (user_id) REFERENCES users (id),
+  CONSTRAINT project_members_role_fk
+   FOREIGN KEY (project_role_id) REFERENCES project_roles (id)
 );
 
-comment on table project_members is 'Tabella di join per appertenenza ad un progetto e con che ruolo';
+COMMENT ON TABLE project_members
+  IS 'Tabella di join per appartenenza ad un progetto e relativo ruolo';
 
-
-create table tasks
-(
-    id             serial            not null,
-    titolo         varchar(200)      not null,
-    descrizione    text              not null,
-    stato          varchar(100)      not null,
-    priorita       integer default 1 not null,
-    project_id     uuid              not null,
-    assignee_id    integer           not null,
-    reporter_id    integer           not null,
-    parent_task_id integer,
-    constraint tasks_pk
-        primary key (id),
-    constraint tasks_projects_uuid_fk
-        foreign key (project_id) references projects,
-    constraint tasks_tasks_id_fk
-        foreign key (parent_task_id) references tasks,
-    constraint tasks_users_id_fk
-        foreign key (assignee_id) references users,
-    constraint tasks_users_id_fk_2
-        foreign key (reporter_id) references users
+CREATE TABLE tasks (
+  id SERIAL NOT NULL,
+  titolo VARCHAR(200) NOT NULL,
+  descrizione TEXT NOT NULL,
+  stato VARCHAR(100) NOT NULL,
+  priorita VARCHAR(100) NOT NULL,
+  progresso INTEGER NOT NULL DEFAULT 0,
+  data_creazione DATE NOT NULL DEFAULT CURRENT_DATE,
+  data_assegnazione DATE,
+  data_inizio_lavorazione DATE,
+  data_ultima_modifica DATE NOT NULL DEFAULT CURRENT_DATE,
+  data_scadenza DATE NOT NULL,
+  data_chiusura DATE,
+  project_id UUID NOT NULL,
+  assignee_id INTEGER NOT NULL,
+  reporter_id INTEGER NOT NULL,
+  parent_task_id INTEGER,
+  CONSTRAINT tasks_pk PRIMARY KEY (id),
+  CONSTRAINT tasks_project_fk
+   FOREIGN KEY (project_id) REFERENCES projects (uuid),
+  CONSTRAINT tasks_parent_task_fk
+   FOREIGN KEY (parent_task_id) REFERENCES tasks (id),
+  CONSTRAINT tasks_assignee_fk
+   FOREIGN KEY (assignee_id) REFERENCES users (id),
+  CONSTRAINT tasks_reporter_fk
+   FOREIGN KEY (reporter_id) REFERENCES users (id)
 );
 
-
-create table comments
-(
-    id         serial                   not null,
-    testo      text                     not null,
-    created_at date default date(now()) not null,
-    task_id    integer,
-    user_id    integer,
-    constraint comments_pk
-        primary key (id),
-    constraint comments_tasks_id_fk
-        foreign key (task_id) references tasks,
-    constraint comments_users_id_fk
-        foreign key (user_id) references users
+CREATE TABLE comments (
+  id SERIAL NOT NULL,
+  testo TEXT NOT NULL,
+  created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+  task_id INTEGER,
+  user_id INTEGER,
+  CONSTRAINT comments_pk PRIMARY KEY (id),
+  CONSTRAINT comments_task_fk
+    FOREIGN KEY (task_id) REFERENCES tasks (id),
+  CONSTRAINT comments_user_fk
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
-

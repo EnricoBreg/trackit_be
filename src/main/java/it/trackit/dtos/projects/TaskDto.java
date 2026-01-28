@@ -12,6 +12,7 @@ public class TaskDto {
   private String descrizione;
   private Task.Stato stato;
   private Integer priorita;
+  private Integer progresso;
   private TaskUserDto assegnatario;
   private TaskUserDto creatore;
   private UUID projectId;

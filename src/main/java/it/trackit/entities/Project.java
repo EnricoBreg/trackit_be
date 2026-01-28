@@ -15,12 +15,12 @@ import java.util.UUID;
 @Setter
 public class Project {
   public enum Stato {
-    PENDING,
-    IN_PROGRESS,
-    DONE,
-    CANCELLED,
-    REJECTED,
-    ARCHIVED
+    IDEA,
+    PIANIFICATO,
+    IN_CORSO,
+    IN_PAUSA,
+    COMPLETATO,
+    ANNULLATO
   }
 
   @Id
@@ -28,7 +28,7 @@ public class Project {
   @Column(name = "uuid")
   private UUID id;
 
-  @Column(name = "nome_progetto")
+  @Column(name = "nome", nullable = false)
   private String nome;
 
   @Column(name = "descrizione")
@@ -36,15 +36,24 @@ public class Project {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "stato")
-  private Stato stato = Stato.PENDING;
+  private Stato stato = Stato.IDEA;
 
-  @Column(name = "created_at")
-  private LocalDateTime dataCreazione;
+  @Column(name = "data_creazione", nullable = false)
+  private LocalDateTime dataCreazione = LocalDateTime.now();
 
-  @Column(name = "updated_at")
-  private LocalDateTime dataUltimaModifica;
+  @Column(name = "data_inizio_lavorazione")
+  private LocalDateTime dataInizioLavorazione;
 
-  @Column(name = "ended_at")
+  @Column(name = "data_ultima_modifica", nullable = false)
+  private LocalDateTime dataUltimaModifica = LocalDateTime.now();
+
+  @Column(name = "data_scadenza", nullable = false)
+  private LocalDateTime dataScadenza;
+
+  @Column(name = "data_prevista_chiusura")
+  private LocalDateTime dataPrevistaChiusura;
+
+  @Column(name = "data_chiusura")
   private LocalDateTime dataChiusura;
 
   @OneToMany(mappedBy = "project", cascade = CascadeType.MERGE,
@@ -54,6 +63,11 @@ public class Project {
   @OneToMany(mappedBy = "project", cascade = CascadeType.MERGE,
              orphanRemoval = true, fetch = FetchType.LAZY)
   private List<ProjectMember> members = new ArrayList<>();
+
+  @PreUpdate
+  private void onPreUpdate() {
+    dataUltimaModifica = LocalDateTime.now();
+  }
 
   public int getTasksCount() {
     return tasks.size();
@@ -85,5 +99,21 @@ public class Project {
     if (!members.contains(member)) return;
     members.remove(member);
     member.setProject(null);
+  }
+
+  public boolean isChiuso() {
+    return this.stato == Stato.COMPLETATO || this.stato == Stato.ANNULLATO;
+  }
+
+  public boolean isChiusoInRitardo() {
+    return dataChiusura != null
+           && dataScadenza != null
+           && dataChiusura.isAfter(dataScadenza);
+  }
+
+  public boolean isChiusoOltrePrevisione() {
+    return dataPrevistaChiusura != null
+           && dataChiusura != null
+           && dataPrevistaChiusura.isBefore(dataChiusura);
   }
 }
