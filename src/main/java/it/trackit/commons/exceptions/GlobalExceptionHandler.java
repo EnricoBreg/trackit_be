@@ -3,6 +3,7 @@ package it.trackit.commons.exceptions;
 import it.trackit.services.I18nService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,12 +15,15 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
   private final I18nService i18nService;
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorDto> handleUnreadableMessage(HttpMessageNotReadableException exception) {
+    log.error("GlobalExceptionHandler.handleUnreadableMessage: {}", exception.getMessage());
+
     return ResponseEntity.badRequest().body(
       ErrorDto.builder()
         .error("INVALID_REQUEST_BODY")
