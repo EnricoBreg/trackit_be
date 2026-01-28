@@ -113,6 +113,7 @@ public class DataSeedingConfig {
       LocalDateTime createdAt =  LocalDateTime.ofInstant(faker.timeAndDate().past(60, TimeUnit.DAYS),
                                                          ZoneId.of("UTC"));
       LocalDateTime updatedAt = LocalDateTime.now();
+      LocalDateTime dataScadenza = createdAt.plusDays(new Random().nextInt(10) + 30);
 
       var progetto = new Project();
       progetto.setNome(nomeProgetto);
@@ -120,6 +121,7 @@ public class DataSeedingConfig {
       progetto.setStato(stato);
       progetto.setDataCreazione(createdAt);
       progetto.setDataUltimaModifica(updatedAt);
+      progetto.setDataScadenza(dataScadenza);
 
       progetti.add(progetto);
 

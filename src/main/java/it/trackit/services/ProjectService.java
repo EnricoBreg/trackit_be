@@ -80,7 +80,7 @@ public class ProjectService {
     var task = taskMapper.toEntity(request);
     project.addTask(task);
     task.setAssegnatario(user);
-    task.setCreatore(user); // TODO: da implementare il creatore del progetto
+    task.setReporter(user); // TODO: da implementare il creatore del progetto
 
     taskRepository.save(task);
 

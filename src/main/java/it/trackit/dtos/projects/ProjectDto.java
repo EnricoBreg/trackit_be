@@ -15,10 +15,16 @@ public class ProjectDto {
   private String descrizione;
   private Stato stato;
   private LocalDateTime dataCreazione;
+  private LocalDateTime dataInizioLavorazione;
   private LocalDateTime dataUltimaModifica;
+  private LocalDateTime dataScadenza;
+  private LocalDateTime dataPrevistaChiusura;
   private LocalDateTime dataChiusura;
   private Integer tasksCount;
   private List<TaskDto> tasks = new ArrayList<>();
   private Integer membersCount;
   private List<ProjectMemberDto> members = new ArrayList<>();
+  private Boolean chiuso;
+  private Boolean chiusoInRitardo;
+  private Boolean chiusoOltrePrevisione;
 }
