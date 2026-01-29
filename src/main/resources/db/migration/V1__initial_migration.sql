@@ -63,7 +63,7 @@ CREATE TABLE tasks (
   data_scadenza DATE NOT NULL,
   data_chiusura DATE,
   project_id UUID NOT NULL,
-  assignee_id INTEGER NOT NULL,
+  assignee_id INTEGER,
   reporter_id INTEGER NOT NULL,
   parent_task_id INTEGER,
   CONSTRAINT tasks_pk PRIMARY KEY (id),

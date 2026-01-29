@@ -41,6 +41,6 @@ public class CreateProjectTaskRequest {
 
   private LocalDateTime dataChiusura;
 
-  @NotNull(message = "task.assegnatario.richiesto")
+  //@NotNull(message = "task.assegnatario.richiesto")
   private Long assegnatario;
 }

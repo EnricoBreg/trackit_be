@@ -11,6 +11,7 @@ import it.trackit.dtos.projects.*;
 import it.trackit.entities.Project;
 import it.trackit.entities.ProjectMember;
 import it.trackit.entities.ProjectMemberKey;
+import it.trackit.entities.User;
 import it.trackit.mappers.ProjectMapper;
 import it.trackit.mappers.TaskMapper;
 import it.trackit.mappers.UserMapper;
@@ -77,12 +78,15 @@ public class ProjectService {
   @Transactional
   public TaskDto createProjectTask(UUID projectId, CreateProjectTaskRequest request) {
     var project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
-    var assegnatario = userRepository.findById(request.getAssegnatario()).orElseThrow(UserNotFoundException::new);
+    var assegnatario = request.getAssegnatario() != null
+      ? userRepository.findById(request.getAssegnatario()).orElseThrow(UserNotFoundException::new)
+      : null;
 
     UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    var reporter = assegnatario;
-    if (principal != null)
+    User reporter = null;
+    if (principal != null) {
       reporter = principal.getUser();
+    }
 
     var task = taskMapper.toEntity(request);
     project.addTask(task);
