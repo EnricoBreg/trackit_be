@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -82,8 +81,11 @@ public class ProjectController {
   }
 
   @GetMapping("/{projectId}/members")
-  public List<UserDto> getProjectMembers(@PathVariable("projectId") UUID projectId) {
-    return projectService.getProjectMembers(projectId);
+  public PaginatedResponse<UserDto> getProjectMembers(
+    @PageableDefault(size = 15, sort = {"user.cognome"}) Pageable pageable,
+    @PathVariable("projectId") UUID projectId
+  ) {
+    return projectService.getProjectMembers(pageable, projectId);
   }
 
   @PostMapping("/{projectId}/members")

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -97,9 +96,11 @@ public class ProjectService {
     return taskMapper.toDto(task);
   }
 
-  public List<UserDto> getProjectMembers(UUID projectId) {
-    var users = projectMemberRepository.findUsersByProjectId(projectId);
-    return users.stream().map(userMapper::toDto).toList();
+  public PaginatedResponse<UserDto> getProjectMembers(Pageable pageable, UUID projectId) {
+    Page<User> page = projectMemberRepository.findUsersByProjectId(projectId, pageable);
+    var users = page.getContent().stream().map(userMapper::toDto).toList();
+
+    return DomainUtils.buildPaginatedResponse(page, users);
   }
 
   public ProjectMemberDto addUserWithRole(UUID projectId, Long userId, String roleName) throws RoleNotFoundException {

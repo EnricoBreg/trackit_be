@@ -3,6 +3,8 @@ package it.trackit.repositories;
 import it.trackit.entities.ProjectMember;
 import it.trackit.entities.ProjectMemberKey;
 import it.trackit.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +33,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Pr
   // dove l'id del progetto corrisponde al parametro. Serve
   // per trovare gli utenti che sono membri di un progetto
   @Query("SELECT pm.user FROM ProjectMember pm WHERE pm.project.id = :projectId")
-  List<User> findUsersByProjectId(@Param("projectId") UUID id);
+  Page<User> findUsersByProjectId(@Param("projectId") UUID id, Pageable pageable);
 
   boolean existsByProject_IdAndUser_Id(UUID projectId, Long userId);
 }
