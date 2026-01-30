@@ -60,13 +60,17 @@ public class ProjectController {
    * @return istanza di {@link ProjectDto} se esiste il progetto, altrimenti errore 404
    */
   @GetMapping("/{projectId}")
-  public ProjectDto getProject(@PathVariable("projectId") UUID projectId) {
+  public ProjectDto getProject(
+    @PathVariable("projectId") UUID projectId) {
     return projectService.getProject(projectId);
   }
 
   @GetMapping("/{projectId}/tasks")
-  public List<TaskDto> getProjectTasks(@PathVariable("projectId") UUID projectId) {
-    return projectService.getProjectTasks(projectId);
+  public PaginatedResponse<TaskDto> getProjectTasks(
+    @PageableDefault(size = 15, sort = {"titolo"}) Pageable pageable,
+    @PathVariable("projectId") UUID projectId
+  ) {
+    return projectService.getProjectTasks(pageable, projectId);
   }
 
   @PostMapping("/{projectId}/tasks")

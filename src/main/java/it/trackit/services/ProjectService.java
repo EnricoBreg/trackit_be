@@ -8,10 +8,7 @@ import it.trackit.config.security.UserPrincipal;
 import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
-import it.trackit.entities.Project;
-import it.trackit.entities.ProjectMember;
-import it.trackit.entities.ProjectMemberKey;
-import it.trackit.entities.User;
+import it.trackit.entities.*;
 import it.trackit.mappers.ProjectMapper;
 import it.trackit.mappers.TaskMapper;
 import it.trackit.mappers.UserMapper;
@@ -61,9 +58,11 @@ public class ProjectService {
     return projectMapper.toDto(project);
   }
 
-  public List<TaskDto> getProjectTasks(UUID projectId) {
-    var tasks = taskRepository.findByProject_Id(projectId);
-    return tasks.stream().map(taskMapper::toDto).toList();
+  public PaginatedResponse<TaskDto> getProjectTasks(Pageable pageable, UUID projectId) {
+    Page<Task> page = taskRepository.findByProject_Id(projectId, pageable);
+    var tasks = page.getContent().stream().map(taskMapper::toDto).toList();
+
+    return DomainUtils.buildPaginatedResponse(page, tasks);
   }
 
   public ProjectDto createProjectFromRequest(CreateProjectRequest request) {

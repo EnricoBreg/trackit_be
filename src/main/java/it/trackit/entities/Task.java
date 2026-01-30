@@ -27,7 +27,11 @@ public class Task {
   }
 
   public enum Priorita {
-    BASSA, MEDIO_BASSA, MEDIA, MEDIO_ALTA, ALTA
+    BASSA,
+    MEDIO_BASSA,
+    MEDIA,
+    MEDIO_ALTA,
+    ALTA
   }
 
   @Id
