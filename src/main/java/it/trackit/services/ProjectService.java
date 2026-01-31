@@ -8,10 +8,7 @@ import it.trackit.config.security.UserPrincipal;
 import it.trackit.dtos.PaginatedResponse;
 import it.trackit.dtos.projects.*;
 import it.trackit.entities.*;
-import it.trackit.mappers.ProjectMapper;
-import it.trackit.mappers.ProjectMemberMapper;
-import it.trackit.mappers.TaskMapper;
-import it.trackit.mappers.UserMapper;
+import it.trackit.mappers.*;
 import it.trackit.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,6 +36,7 @@ public class ProjectService {
   private final UserService userService;
   private final UserMapper userMapper;
   private final ProjectMemberMapper projectMemberMapper;
+  private final ProjectRoleMapper projectRoleMapper;
 
 
   public PaginatedResponse<ProjectDto> getAllProjects(Pageable pageable, String searchText) {
@@ -132,5 +130,13 @@ public class ProjectService {
     // e lancia la DELETE SQL automaticamente grazie a orphanRemoval=true.
     // projectMemberRepository.delete(projectMember);
     projectRepository.save(project);
+  }
+
+  public PaginatedResponse<ProjectRoleDto> getAllRoles(Pageable pageable, String searchText) {
+    Page<ProjectRole> page = searchText != null ? projectRoleRepository.findByNomeContainingIgnoreCase(searchText, pageable)
+                                                : projectRoleRepository.findAll(pageable);
+
+    var roles = page.getContent().stream().map(projectRoleMapper::toDto).toList();
+    return DomainUtils.buildPaginatedResponse(page, roles);
   }
 }
