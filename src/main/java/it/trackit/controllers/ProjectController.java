@@ -4,7 +4,6 @@ import it.trackit.commons.exceptions.ProjectNotFoundException;
 import it.trackit.commons.exceptions.RoleNotFoundException;
 import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.dtos.PaginatedResponse;
-import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
 import it.trackit.repositories.ProjectRepository;
 import it.trackit.repositories.TaskRepository;
@@ -81,7 +80,7 @@ public class ProjectController {
   }
 
   @GetMapping("/{projectId}/members")
-  public PaginatedResponse<UserDto> getProjectMembers(
+  public PaginatedResponse<ProjectMemberDto> getProjectMembers(
     @PageableDefault(size = 15, sort = {"user.cognome"}) Pageable pageable,
     @PathVariable("projectId") UUID projectId
   ) {

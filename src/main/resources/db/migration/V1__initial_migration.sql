@@ -30,7 +30,8 @@ CREATE TABLE projects (
 CREATE TABLE project_roles (
   id SERIAL NOT NULL,
   nome_ruolo VARCHAR(200) NOT NULL,
-  CONSTRAINT project_roles_pk PRIMARY KEY (id)
+  CONSTRAINT project_roles_pk PRIMARY KEY (id),
+  CONSTRAINT project_roles_nome_ruolo_uk UNIQUE (nome_ruolo)
 );
 
 CREATE TABLE project_members (

@@ -1,2 +1,2 @@
 ALTER TABLE project_roles
-  ADD level INTEGER NOT NULL;
+  ADD level INTEGER DEFAULT(1) NOT NULL;

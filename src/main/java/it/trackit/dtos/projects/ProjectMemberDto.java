@@ -8,6 +8,6 @@ import java.util.UUID;
 @Data
 public class ProjectMemberDto {
   private UserDto user;
-  private String role;
+  private ProjectRoleDto role;
   private UUID projectId;
 }

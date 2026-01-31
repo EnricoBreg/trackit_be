@@ -14,9 +14,12 @@ public class ProjectRole {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "nome_ruolo")
+  @Column(name = "nome_ruolo", nullable = false)
   private String nome;
 
-  @Column(name = "level")
+  @Column(name = "display_name", nullable = false)
+  private String displayName;
+
+  @Column(name = "level", nullable = false)
   private Integer livello = 1;
 }

@@ -6,10 +6,10 @@ import it.trackit.commons.exceptions.UserNotFoundException;
 import it.trackit.commons.utils.DomainUtils;
 import it.trackit.config.security.UserPrincipal;
 import it.trackit.dtos.PaginatedResponse;
-import it.trackit.dtos.UserDto;
 import it.trackit.dtos.projects.*;
 import it.trackit.entities.*;
 import it.trackit.mappers.ProjectMapper;
+import it.trackit.mappers.ProjectMemberMapper;
 import it.trackit.mappers.TaskMapper;
 import it.trackit.mappers.UserMapper;
 import it.trackit.repositories.*;
@@ -38,6 +38,7 @@ public class ProjectService {
 
   private final UserService userService;
   private final UserMapper userMapper;
+  private final ProjectMemberMapper projectMemberMapper;
 
 
   public PaginatedResponse<ProjectDto> getAllProjects(Pageable pageable, String searchText) {
@@ -96,11 +97,11 @@ public class ProjectService {
     return taskMapper.toDto(task);
   }
 
-  public PaginatedResponse<UserDto> getProjectMembers(Pageable pageable, UUID projectId) {
-    Page<User> page = projectMemberRepository.findUsersByProjectId(projectId, pageable);
-    var users = page.getContent().stream().map(userMapper::toDto).toList();
+  public PaginatedResponse<ProjectMemberDto> getProjectMembers(Pageable pageable, UUID projectId) {
+    Page<ProjectMember> page = projectMemberRepository.findByProject_Id(projectId, pageable);
+    var projectMembersDto = page.getContent().stream().map(projectMemberMapper::toDto).toList();
 
-    return DomainUtils.buildPaginatedResponse(page, users);
+    return DomainUtils.buildPaginatedResponse(page, projectMembersDto);
   }
 
   public ProjectMemberDto addUserWithRole(UUID projectId, Long userId, String roleName) throws RoleNotFoundException {

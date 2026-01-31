@@ -8,7 +8,7 @@ import it.trackit.entities.ProjectMember;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
-        uses = {TaskMapper.class})
+        uses = {TaskMapper.class, ProjectRoleMapper.class})
 public interface ProjectMapper {
   @Mapping(target = "tasks", source = "tasks")
   @Mapping(target = "members", source = "members")
@@ -25,7 +25,7 @@ public interface ProjectMapper {
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   void update(Project project, @MappingTarget ProjectDto dto);
 
-  @Mapping(target = "role", source = "role.nome")
+  //@Mapping(target = "role", source = "role.nome")
   @Mapping(target = "user.nominativo", expression = "java(user.getDisplayName())")
   @Mapping(target = "projectId", source = "project.id")
   ProjectMemberDto toDto(ProjectMember projectMember);
