@@ -94,9 +94,9 @@ public class ProjectController {
     UriComponentsBuilder uriBuilder
   ) {
     var userId = request.getUserId();
-    var roleName = request.getRole();
+    var roleId = request.getRoleId();
 
-    var projectMemberDto = projectService.addUserWithRole(projectId, userId, roleName);
+    var projectMemberDto = projectService.addUserWithRole(projectId, userId, roleId);
     var uri = uriBuilder.path("/api/projects/{id}").buildAndExpand(projectMemberDto.getProjectId()).toUri();
 
     return ResponseEntity.created(uri).body(projectMemberDto);

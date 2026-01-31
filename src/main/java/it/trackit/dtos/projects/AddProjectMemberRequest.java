@@ -9,5 +9,5 @@ public class AddProjectMemberRequest {
   private Long userId;
 
   @NotNull(message = "role.notNull")
-  private String role;
+  private Long roleId;
 }

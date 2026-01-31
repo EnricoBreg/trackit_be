@@ -102,10 +102,10 @@ public class ProjectService {
     return DomainUtils.buildPaginatedResponse(page, projectMembersDto);
   }
 
-  public ProjectMemberDto addUserWithRole(UUID projectId, Long userId, String roleName) throws RoleNotFoundException {
+  public ProjectMemberDto addUserWithRole(UUID projectId, Long userId, Long roleId) throws RoleNotFoundException {
     var project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
     var user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-    var role = projectRoleRepository.findByNome(roleName).orElseThrow(RoleNotFoundException::new);
+    var role = projectRoleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
 
     var projectMember = new ProjectMember(project, user, role);
 
