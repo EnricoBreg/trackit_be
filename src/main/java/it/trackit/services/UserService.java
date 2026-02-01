@@ -17,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,12 +29,20 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final AuthService authService;
 
   public PaginatedResponse<UserDto> getAllUsers(Pageable pageable, String searchText) {
     Page<User> page = searchText != null ? userRepository.searchUsers(searchText, pageable)
                                          : userRepository.findAll(pageable);
-    var users = page.getContent().stream().map(userMapper::toDto).toList();
-    return DomainUtils.buildPaginatedResponse(page, users);
+    var isSuperAdmin = authService.isCurrentUserASuperAdmin();
+    List<UserDto> filteredUsers = new ArrayList<UserDto>();
+    if (!isSuperAdmin) {
+      filteredUsers = page.getContent().stream().filter(u -> !u.isSuperAdmin()).map(userMapper::toDto).toList();
+    } else {
+      filteredUsers = page.getContent().stream().map(userMapper::toDto).toList();
+    }
+
+    return DomainUtils.buildPaginatedResponse(page, filteredUsers);
   }
 
   public UserDto getUser(Long id) {
