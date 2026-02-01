@@ -1,8 +1,15 @@
 package it.trackit.config.security;
 
+import it.trackit.services.AuthService;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+@NoArgsConstructor(force = true)
+@RequiredArgsConstructor
 public class BaseAppSecurityRules {
+
+  private final AuthService authService;
 
   protected Long getAuthenticatedUserId() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -11,9 +18,7 @@ public class BaseAppSecurityRules {
   }
 
   protected boolean isCurrentSuperAdmin() {
-    var authentication = SecurityContextHolder.getContext().getAuthentication();
-    return authentication.getAuthorities().stream()
-      .anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"));
+    return authService != null && authService.isCurrentUserASuperAdmin();
   }
 
   protected boolean isCurrentAdmin() {
