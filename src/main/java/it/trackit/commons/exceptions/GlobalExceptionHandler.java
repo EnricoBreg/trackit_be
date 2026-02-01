@@ -4,6 +4,7 @@ import it.trackit.services.I18nService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,10 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+  private static final String INVALID_REQUEST_BODY_TITLE = "INVALID_REQUEST_BODY_TITLE";
+  private static final String VALIDATION_ERROR_TITLE = "VALIDATION_ERROR";
+  private static final String DATA_INTEGRITY_ERROR_TITLE = "DATA_INTEGRITY_ERROR";
+
   private final I18nService i18nService;
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -26,7 +31,7 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.badRequest().body(
       ErrorDto.builder()
-        .error("INVALID_REQUEST_BODY")
+        .error(INVALID_REQUEST_BODY_TITLE)
         .message(i18nService.getLocalizedString("http.invalidRequestBody"))
         .timestamp(System.currentTimeMillis())
         .build()
@@ -44,7 +49,7 @@ public class GlobalExceptionHandler {
     });
 
     var error = ErrorDto.builder()
-      .error("VALIDATION_ERROR")
+      .error(VALIDATION_ERROR_TITLE)
       .message(i18nService.getLocalizedString("validationError"))
       .errors(errors)
       .timestamp(System.currentTimeMillis())
@@ -76,9 +81,32 @@ public class GlobalExceptionHandler {
     });
 
     var error = ErrorDto.builder()
-      .error("VALIDATION_ERROR")
+      .error(VALIDATION_ERROR_TITLE)
       .message(i18nService.getLocalizedString("validationError"))
       .errors(errors)
+      .timestamp(System.currentTimeMillis())
+      .build();
+
+    return ResponseEntity.badRequest().body(error);
+  }
+
+  @ExceptionHandler({DataIntegrityViolationException.class})
+  public ResponseEntity<ErrorDto> handleDataIntegrityViolation(DataIntegrityViolationException exception) {
+    String message = i18nService.getLocalizedString("duplicatedValue");
+
+    // Se l'exception è stata wrappata molte volte (capita in Postgres), ex.getContraintName() non funziona
+    // bisogna quindi andare alla ricerca del messaggio specifico tra le cause più specifiche.
+    Throwable root = exception.getMostSpecificCause();
+    String rootMessage = root.getMessage();
+
+    if (rootMessage != null && rootMessage.contains("project_members_pk")) {
+      message = i18nService.getLocalizedString("project.member.alreadyExists");
+    }
+
+    var error = ErrorDto.builder()
+      .error(DATA_INTEGRITY_ERROR_TITLE)
+      .message(i18nService.getLocalizedString("dataIntegrityError"))
+      .errors(Map.of("projectMember", message))
       .timestamp(System.currentTimeMillis())
       .build();
 
