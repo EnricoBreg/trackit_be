@@ -13,7 +13,7 @@ spring:
 
 app:
   cors:
-    allowed-origins: http://localhost:3000, http://localhost:5173, http://127.0.0.1:3000, http://127.0.0.1:5173, https://localhost:3000, https://localhost:5173, https://127.0.0.1:3000, https://127.0.0.1:5173
+    allowed-origins: http://localhost:3000, http://localhost:5173, http://127.0.0.1:3000, http://127.0.0.1:5173, https://localhost:3000, https://localhost:5173, https://127.0.0.1:3000, https://127.0.0.1:5173, https://192.168.1.60:3000, https://192.168.1.60:5173
 
 # Documentazione API Restfull
 springdoc:
@@ -24,7 +24,9 @@ server:
   port: 8080
   ssl:
     enabled: true
-    key-store: classpath:certs/keystore.p12
+    key-store: classpath:certs/backend-keystore.p12
     key-store-password: password
     key-store-type: PKCS12
-    key-alias: local-dev
+    key-alias: springboot
+  address: 0.0.0.0
+
