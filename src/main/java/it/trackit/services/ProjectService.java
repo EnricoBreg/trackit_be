@@ -96,7 +96,7 @@ public class ProjectService {
   }
 
   public PaginatedResponse<ProjectMemberDto> getProjectMembers(Pageable pageable, UUID projectId) {
-    Page<ProjectMember> page = projectMemberRepository.findByProject_Id(projectId, pageable);
+    Page<ProjectMember> page = projectMemberRepository.findByProjectIdOrderByLivelloDesc(projectId, pageable);
     var projectMembersDto = page.getContent().stream().map(projectMemberMapper::toDto).toList();
 
     return DomainUtils.buildPaginatedResponse(page, projectMembersDto);
